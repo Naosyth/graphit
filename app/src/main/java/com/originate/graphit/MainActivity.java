@@ -1,5 +1,6 @@
 package com.originate.graphit;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -30,7 +31,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new MainFragment())
                     .commit();
         }
     }
@@ -46,7 +47,8 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            //TODO: Open settings activity
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -55,8 +57,11 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
-        public PlaceholderFragment() {
+    public static class MainFragment extends Fragment {
+
+        private ArrayAdapter<String> mGraphListAdapter;
+
+        public MainFragment() {
         }
 
         private List<MetricModel> getModel() {
