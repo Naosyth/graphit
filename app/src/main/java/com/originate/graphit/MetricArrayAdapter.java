@@ -31,10 +31,10 @@ public class MetricArrayAdapter extends ArrayAdapter<MetricModel> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = null;
-        if (convertView == null) {
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        View view;
+        MetricModel model = list.get(position);
 
+        if (convertView == null) {
             LayoutInflater inflator = context.getLayoutInflater();
             view = inflator.inflate(R.layout.list_item_graph, null);
             final ViewHolder viewHolder = new ViewHolder();
@@ -42,7 +42,7 @@ public class MetricArrayAdapter extends ArrayAdapter<MetricModel> {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MetricModel element = (MetricModel) viewHolder.text.getTag();
+                    //TODO: Open a new activity with the graph
                 }
             });
 
@@ -52,27 +52,30 @@ public class MetricArrayAdapter extends ArrayAdapter<MetricModel> {
             viewHolder.toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    MetricModel element = (MetricModel) viewHolder.toggle.getTag();
-                    element.setEnabled(buttonView.isChecked());
+                    MetricModel model = (MetricModel) viewHolder.toggle.getTag();
+                    model.setEnabled(buttonView.isChecked());
 
                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
                     SharedPreferences.Editor edit = settings.edit();
-                    edit.putBoolean(element.getKey(), element.isEnabled());
+                    edit.putBoolean(model.getKey(), model.isEnabled());
                     edit.commit();
                 }
             });
-            list.get(position).setEnabled(settings.getBoolean(((MetricModel)list.get(position)).getKey(), false));
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+            model.setEnabled(settings.getBoolean(model.getKey(), false));
 
             view.setTag(viewHolder);
-            viewHolder.toggle.setTag(list.get(position));
-            viewHolder.text.setTag(list.get(position));
+            viewHolder.toggle.setTag(model);
+            viewHolder.text.setTag(model);
         } else {
             view = convertView;
-            ((ViewHolder) view.getTag()).toggle.setTag(list.get(position));
+            ((ViewHolder) view.getTag()).toggle.setTag(model);
+            ((ViewHolder) view.getTag()).text.setTag(model);
         }
+
         ViewHolder holder = (ViewHolder) view.getTag();
-        holder.text.setText(list.get(position).getName());
-        holder.toggle.setChecked(list.get(position).isEnabled());
+        holder.text.setText(model.getName());
+        holder.toggle.setChecked(model.isEnabled());
 
         return view;
     }

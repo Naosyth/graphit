@@ -1,6 +1,6 @@
 package com.originate.graphit;
 
-import android.widget.Toast;
+import android.content.SharedPreferences;
 
 public class MetricModel {
     private String name;
@@ -27,9 +27,5 @@ public class MetricModel {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public void toggleEnabled() {
-        this.enabled = !this.enabled;
     }
 }
