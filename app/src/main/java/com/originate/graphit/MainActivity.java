@@ -10,8 +10,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,36 +64,28 @@ public class MainActivity extends ActionBarActivity {
         public PlaceholderFragment() {
         }
 
+        private List<MetricModel> getModel() {
+            List<MetricModel> list = new ArrayList<MetricModel>();
+            list.add(new MetricModel("Battery", "battery"));
+            list.add(new MetricModel("Data", "data"));
+            list.add(new MetricModel("Accelerometer", "accelerometer"));
+            list.add(new MetricModel("Ambient Light", "ambient_light"));
+            list.add(new MetricModel("Gyroscope", "gyroscope"));
+            list.add(new MetricModel("Proximity", "proximity"));
+            list.add(new MetricModel("Distance Walked", "distance_walked"));
+            list.add(new MetricModel("Steps Taken", "steps"));
+            list.add(new MetricModel("Something Else", "something_else"));
+            list.add(new MetricModel("Another Thing", "another_thing"));
+            return list;
+        }
+
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            String[] graphArray = {
-                    "Battery",
-                    "Data",
-                    "Walking",
-                    "Acceleration",
-                    "Something else",
-                    "More stuff",
-                    "Things",
-                    "And more things",
-                    "I need more things for it to scroll",
-                    "This should be enough"
-            };
-
-            List<String> graphList = new ArrayList<String>(
-                    Arrays.asList(graphArray));
-
-            mGraphListAdapter = new ArrayAdapter<String>(
-                    getActivity(),
-                    R.layout.list_item_graph,
-                    R.id.list_item_graph_textview,
-                    graphList);
-
-            ListView listView = (ListView) rootView.findViewById(
-                    R.id.listview_graphs);
-            listView.setAdapter(mGraphListAdapter);
+            ArrayAdapter<MetricModel> adapter = new MetricArrayAdapter(getActivity(), getModel());
+            ListView listView = (ListView) rootView.findViewById(R.id.listview_graphs);
+            listView.setAdapter(adapter);
 
             return rootView;
         }
