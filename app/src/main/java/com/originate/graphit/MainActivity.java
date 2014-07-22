@@ -38,7 +38,6 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -54,28 +53,22 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
     public static class MainFragment extends Fragment {
-
-        private ArrayAdapter<String> mGraphListAdapter;
-
         public MainFragment() {
         }
 
         private List<MetricModel> getModel() {
             List<MetricModel> list = new ArrayList<MetricModel>();
-            list.add(new MetricModel("Battery", "battery"));
-            list.add(new MetricModel("Data", "data"));
-            list.add(new MetricModel("Accelerometer", "accelerometer"));
-            list.add(new MetricModel("Ambient Light", "ambient_light"));
-            list.add(new MetricModel("Gyroscope", "gyroscope"));
-            list.add(new MetricModel("Proximity", "proximity"));
-            list.add(new MetricModel("Distance Walked", "distance_walked"));
-            list.add(new MetricModel("Steps Taken", "steps"));
-            list.add(new MetricModel("Something Else", "something_else"));
-            list.add(new MetricModel("Another Thing", "another_thing"));
+            list.add(new MetricModel("Battery", "pref_battery_enabled"));
+            list.add(new MetricModel("Data", "pref_data_enabled"));
+            list.add(new MetricModel("Screen Usage", "pref_screen_usage_enabled"));
+            list.add(new MetricModel("Distance Moved", "pref_distance_moved_enabled"));
+            list.add(new MetricModel("Steps Taken", "pref_stepsTaken_enabled"));
+            list.add(new MetricModel("...", "...1"));
+            list.add(new MetricModel("...", "...2"));
+            list.add(new MetricModel("...", "...3"));
+            list.add(new MetricModel("...", "...4"));
+            list.add(new MetricModel("...", "...5"));
             return list;
         }
 

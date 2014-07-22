@@ -1,7 +1,5 @@
 package com.originate.graphit;
 
-import android.content.SharedPreferences;
-
 public class MetricModel {
     private String name;
     private String key;
