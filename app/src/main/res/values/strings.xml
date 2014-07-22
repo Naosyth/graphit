@@ -5,4 +5,12 @@
     <string name="action_settings">Settings</string>
     <string name="app_settings_file"></string>
 
+    <string name="pref_collapseTitle">Data Collapsing Frequency</string>
+    <string name="pref_collapseSummary">How long to wait before compressing data points to save space</string>
+    <string name="pref_collapseDialogTitle">Select a frequency</string>
+
+    <string name="pref_purgeTitle">Data Purging Frequency</string>
+    <string name="pref_purgeSummary">How long to wait before deleting data points to save space</string>
+    <string name="pref_purgeDialogTitle">Select a frequency</string>
+
 </resources>

@@ -1,0 +1,26 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.originate.graphit.SettingsActivity">
+
+    <PreferenceCategory
+        android:title="Storage Options">
+
+        <ListPreference
+            android:key="pref_collapseFrequency"
+            android:title="@string/pref_collapseTitle"
+            android:summary="@string/pref_collapseSummary"
+            android:dialogTitle="@string/pref_collapseDialogTitle"
+            android:entries="@array/pref_collapseFrequency"
+            android:entryValues="@array/pref_collapseFrequencyValues" />
+        <ListPreference
+            android:key="pref_purgeFrequency"
+            android:title="@string/pref_purgeTitle"
+            android:summary="@string/pref_purgeSummary"
+            android:dialogTitle="@string/pref_purgeDialogTitle"
+            android:entries="@array/pref_purgeFrequency"
+            android:entryValues="@array/pref_purgeFrequencyValues" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
