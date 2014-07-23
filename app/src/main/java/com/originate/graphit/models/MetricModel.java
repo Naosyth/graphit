@@ -1,4 +1,4 @@
-package com.originate.graphit;
+package com.originate.graphit.models;
 
 public class MetricModel {
     private String name;

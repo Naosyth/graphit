@@ -11,8 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.originate.graphit.models.MetricModel;
 
 public class MetricArrayAdapter extends ArrayAdapter<MetricModel> {
     private final List<MetricModel> list;
