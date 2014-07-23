@@ -20,6 +20,12 @@
             android:name=".SettingsActivity"
             android:label="@string/action_settings" >
         </activity>
+
+        <service
+            android:name=".DataCollectionService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

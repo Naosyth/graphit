@@ -1,8 +1,10 @@
 package com.originate.graphit;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,16 +12,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.originate.graphit.models.MetricModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -34,6 +33,12 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, new MainFragment())
                     .commit();
         }
+
+        Intent intent = new Intent(this, DataCollectionService.class);
+        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+        Calendar cal = Calendar.getInstance();
+        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 60*1000, pintent);
     }
 
     @Override
@@ -49,6 +54,19 @@ public class MainActivity extends ActionBarActivity {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsIntent);
             return true;
+        }
+        else if (id == R.id.action_startService) {
+            Intent intent = new Intent(this, DataCollectionService.class);
+            PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+            Calendar cal = Calendar.getInstance();
+            AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+            alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 60*1000, pintent);
+        }
+        else if (id == R.id.action_stopService) {
+            Intent intentStop = new Intent(this, DataCollectionService.class);
+            PendingIntent pintentStop = PendingIntent.getService(this, 0, intentStop, 0);
+            AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+            alarm.cancel(pintentStop);
         }
         return super.onOptionsItemSelected(item);
     }
