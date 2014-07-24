@@ -1,29 +1,38 @@
 package com.originate.graphit.models;
 
-public class MetricModel {
-    private String name;
-    private String key;
-    private boolean enabled;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
+import android.widget.Toast;
+
+public abstract class MetricModel implements Parcelable {
+    private String displayName;
+    private String enableKey;
 
     public MetricModel(String name, String key) {
-        this.name = name;
-        this.key = key;
-        this.enabled = false;
+        this.displayName = name;
+        this.enableKey = key;
     }
 
-    public String getName() {
-        return this.name;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
-    public String getKey() {
-        return this.key;
+    public String getEnableKey() {
+        return this.enableKey;
     }
 
-    public boolean isEnabled() {
-        return this.enabled;
+    public void clickHandler(Context context) {
+        // Should be implemented in the extension class
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void toggleHandler(Context context, boolean isChecked) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = settings.edit();
+        edit.putBoolean(enableKey, isChecked);
+        edit.commit();
     }
+
+    public abstract void recordData(Context context);
 }

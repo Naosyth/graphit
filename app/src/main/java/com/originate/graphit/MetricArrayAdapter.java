@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,37 +34,29 @@ public class MetricArrayAdapter extends ArrayAdapter<MetricModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
-        MetricModel model = list.get(position);
+        final MetricModel model = (MetricModel) list.get(position);
 
         if (convertView == null) {
             LayoutInflater inflator = context.getLayoutInflater();
             view = inflator.inflate(R.layout.list_item_graph, null);
             final ViewHolder viewHolder = new ViewHolder();
 
+            viewHolder.text = (TextView) view.findViewById(R.id.list_item_graph_textview);
+            viewHolder.toggle = (ToggleButton) view.findViewById(R.id.list_item_graph_toggle);
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: Open a new activity with the graph
+                    model.clickHandler(context);
                 }
             });
 
-            viewHolder.text = (TextView) view.findViewById(R.id.list_item_graph_textview);
-
-            viewHolder.toggle = (ToggleButton) view.findViewById(R.id.list_item_graph_toggle);
             viewHolder.toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    MetricModel model = (MetricModel) viewHolder.toggle.getTag();
-                    model.setEnabled(buttonView.isChecked());
-
-                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-                    SharedPreferences.Editor edit = settings.edit();
-                    edit.putBoolean(model.getKey(), model.isEnabled());
-                    edit.commit();
+                    model.toggleHandler(context, isChecked);
                 }
             });
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-            model.setEnabled(settings.getBoolean(model.getKey(), false));
 
             view.setTag(viewHolder);
             viewHolder.toggle.setTag(model);
@@ -74,9 +67,10 @@ public class MetricArrayAdapter extends ArrayAdapter<MetricModel> {
             ((ViewHolder) view.getTag()).text.setTag(model);
         }
 
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         ViewHolder holder = (ViewHolder) view.getTag();
-        holder.text.setText(model.getName());
-        holder.toggle.setChecked(model.isEnabled());
+        holder.text.setText(model.getDisplayName());
+        holder.toggle.setChecked(settings.getBoolean(model.getEnableKey(), false));
 
         return view;
     }
