@@ -24,8 +24,8 @@ public class ScreenUsageModel extends MetricModel {
     }
 
     @Override
-    public void recordData(Context context) {
-        //TODO: Record screen usage data
+    public void collapseData() {
+        //TODO: Collapse screen usage data
     }
 
     public static final Parcelable.Creator<ScreenUsageModel> CREATOR

@@ -28,6 +28,11 @@ public class BatteryModel extends MetricModel {
         //TODO: Record battery data
     }
 
+    @Override
+    public void collapseData() {
+        //TODO: Collapse battery data
+    }
+
     public static final Parcelable.Creator<BatteryModel> CREATOR
             = new Parcelable.Creator<BatteryModel>() {
         public BatteryModel createFromParcel(Parcel in) {

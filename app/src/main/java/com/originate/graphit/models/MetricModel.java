@@ -35,4 +35,6 @@ public abstract class MetricModel implements Parcelable {
     }
 
     public abstract void recordData(Context context);
+
+    public abstract void collapseData();
 }
