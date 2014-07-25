@@ -1,9 +1,10 @@
-package com.originate.graphit.models;
+package com.originate.graphit.metrics.screenUsage;
 
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.Toast;
+
+import com.originate.graphit.metrics.MetricModel;
 
 public class ScreenUsageModel extends MetricModel {
     private String databaseKey;
@@ -21,6 +22,11 @@ public class ScreenUsageModel extends MetricModel {
     @Override
     public void clickHandler(Context context) {
         //TODO: Launch graph activity for screen data
+    }
+
+    @Override
+    public void recordData(Context context) {
+        //TODO: Record screen usage data
     }
 
     @Override

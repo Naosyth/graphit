@@ -1,10 +1,9 @@
-package com.originate.graphit.models;
+package com.originate.graphit.metrics;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
 public abstract class MetricModel implements Parcelable {
     private String displayName;

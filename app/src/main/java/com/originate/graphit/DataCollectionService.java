@@ -3,9 +3,8 @@ package com.originate.graphit;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.widget.Toast;
 
-import com.originate.graphit.models.MetricModel;
+import com.originate.graphit.metrics.MetricModel;
 
 import java.util.ArrayList;
 
