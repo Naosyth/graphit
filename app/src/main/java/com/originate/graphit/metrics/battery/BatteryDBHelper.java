@@ -44,7 +44,6 @@ public class BatteryDBHelper extends MetricDBHelper {
 
         db.insert(TABLE_BATTERY, null, values);
         db.close();
-        Log.v("GRAPHIT", "PCT: " + entry.getPercentage() + ", Time: " + entry.getTime());
     }
 
     public BatteryEntry getEntry(int id) {
@@ -59,6 +58,20 @@ public class BatteryDBHelper extends MetricDBHelper {
         }
         else
             return null;
+    }
+
+    public BatteryEntry getLastEntry() {
+        String selectQuery = "SELECT * FROM " + TABLE_BATTERY + " WHERE " + KEY_ID + " = (SELECT MAX(" + KEY_ID + ") FROM " + TABLE_BATTERY + ")";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (!cursor.moveToFirst())
+            return null;
+
+        BatteryEntry entry = new BatteryEntry();
+        entry.setId(cursor.getInt(0));
+        entry.setPercentage(cursor.getFloat(1));
+        entry.setTime((long)cursor.getInt(2));
+        return entry;
     }
 
     public List<BatteryEntry> getAllEntries() {

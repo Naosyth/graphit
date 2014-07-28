@@ -6,12 +6,12 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.originate.graphit.metrics.MetricModel;
 
 import java.util.Calendar;
-import java.util.List;
 
 public class BatteryModel extends MetricModel {
     public BatteryModel() {
@@ -46,18 +46,23 @@ public class BatteryModel extends MetricModel {
         Calendar calendar = Calendar.getInstance();
         BatteryEntry entry = new BatteryEntry(batteryPct, calendar.getTimeInMillis());
         BatteryDBHelper db = new BatteryDBHelper(context);
-        db.addEntry(entry);
 
-        Toast.makeText(context, "Logged: " + entry.getPercentage() + ", " + entry.getTime(), Toast.LENGTH_SHORT).show();
+        if (db.getLastEntry().getPercentage() == entry.getPercentage()) {
+            Log.v("GRAPHIT", "Battery level did not change - ignoring");
+            return;
+        }
+
+        db.addEntry(entry);
+        Log.v("GRAPHIT", "Logged: " + entry.getPercentage() + ", " + entry.getTime());
     }
 
     @Override
     public void collapseData() {
         //TODO: Collapse battery data
+        // Do we actually need to collapse data? If so, how do we want to do it?
     }
 
-    public static final Parcelable.Creator<BatteryModel> CREATOR
-            = new Parcelable.Creator<BatteryModel>() {
+    public static final Parcelable.Creator<BatteryModel> CREATOR = new Parcelable.Creator<BatteryModel>() {
         public BatteryModel createFromParcel(Parcel in) {
             return new BatteryModel(in);
         }

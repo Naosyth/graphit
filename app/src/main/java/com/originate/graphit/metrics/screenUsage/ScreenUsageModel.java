@@ -3,6 +3,7 @@ package com.originate.graphit.metrics.screenUsage;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.originate.graphit.metrics.MetricModel;
 
