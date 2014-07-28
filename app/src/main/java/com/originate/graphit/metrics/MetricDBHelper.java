@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public abstract class MetricDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 6;
     private static final String DATABASE_NAME = "GraphIt";
 
     public MetricDBHelper(Context context) {

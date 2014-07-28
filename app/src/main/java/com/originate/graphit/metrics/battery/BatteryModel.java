@@ -6,7 +6,6 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.originate.graphit.metrics.MetricModel;
@@ -40,26 +39,20 @@ public class BatteryModel extends MetricModel {
         if (batteryStatus == null)
             return;
 
-        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-        float batteryPct = level / (float)scale;
+        float batteryPct = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) / batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         Calendar calendar = Calendar.getInstance();
         BatteryEntry entry = new BatteryEntry(batteryPct, calendar.getTimeInMillis());
         BatteryDBHelper db = new BatteryDBHelper(context);
 
-        if (db.getLastEntry().getPercentage() == entry.getPercentage()) {
-            Log.v("GRAPHIT", "Battery level did not change - ignoring");
+        if (db.getLastEntry() != null && db.getLastEntry().getPercentage() == entry.getPercentage())
             return;
-        }
 
         db.addEntry(entry);
-        Log.v("GRAPHIT", "Logged: " + entry.getPercentage() + ", " + entry.getTime());
     }
 
     @Override
     public void collapseData() {
         //TODO: Collapse battery data
-        // Do we actually need to collapse data? If so, how do we want to do it?
     }
 
     public static final Parcelable.Creator<BatteryModel> CREATOR = new Parcelable.Creator<BatteryModel>() {
@@ -71,11 +64,6 @@ public class BatteryModel extends MetricModel {
             return new BatteryModel[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
