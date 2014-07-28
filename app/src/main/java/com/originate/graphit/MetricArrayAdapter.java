@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.originate.graphit.models.MetricModel;
+import com.originate.graphit.metrics.MetricModel;
 
 public class MetricArrayAdapter extends ArrayAdapter<MetricModel> {
     private final List<MetricModel> list;

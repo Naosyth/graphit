@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -16,9 +15,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.originate.graphit.models.BatteryModel;
-import com.originate.graphit.models.MetricModel;
-import com.originate.graphit.models.ScreenUsageModel;
+import com.originate.graphit.metrics.MetricsList;
+import com.originate.graphit.metrics.battery.BatteryModel;
+import com.originate.graphit.metrics.MetricModel;
+import com.originate.graphit.metrics.screenUsage.ScreenUsageModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,13 +26,12 @@ import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
-    private ArrayList<MetricModel> metricsList = new ArrayList<MetricModel>();
+    private ArrayList<MetricModel> metricsList = MetricsList.getInstance().getList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        populateMetricsList();
         startBackgroundService();
 
         setContentView(R.layout.activity_main);
@@ -41,11 +40,6 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, new MainFragment(metricsList))
                     .commit();
         }
-    }
-
-    private void populateMetricsList() {
-        metricsList.add(new BatteryModel());
-        metricsList.add(new ScreenUsageModel());
     }
 
     private void startBackgroundService() {
