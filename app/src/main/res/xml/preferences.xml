@@ -5,22 +5,16 @@
     tools:context="com.originate.graphit.SettingsActivity">
 
     <PreferenceCategory
-        android:title="Storage Options">
+        android:title="@string/pref_battery_settingsTitle">
 
         <ListPreference
-            android:key="pref_collapseFrequency"
-            android:title="@string/pref_collapseTitle"
-            android:summary="@string/pref_collapseSummary"
-            android:dialogTitle="@string/pref_collapseDialogTitle"
-            android:entries="@array/pref_collapseFrequency"
-            android:entryValues="@array/pref_collapseFrequencyValues" />
-        <ListPreference
-            android:key="pref_purgeFrequency"
-            android:title="@string/pref_purgeTitle"
-            android:summary="@string/pref_purgeSummary"
-            android:dialogTitle="@string/pref_purgeDialogTitle"
-            android:entries="@array/pref_purgeFrequency"
-            android:entryValues="@array/pref_purgeFrequencyValues" />
+            android:key="@string/pref_battery_collapseDelay"
+            android:title="@string/pref_battery_collapseTitle"
+            android:summary="@string/pref_battery_collapseSummary"
+            android:dialogTitle="@string/pref_battery_collapseDialogTitle"
+            android:entries="@array/pref_batteryCollapseFrequency"
+            android:entryValues="@array/pref_batteryCollapseFrequencyValues"
+            android:defaultValue="7776000000"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

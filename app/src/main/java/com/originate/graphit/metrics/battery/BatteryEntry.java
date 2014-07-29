@@ -1,23 +1,17 @@
 package com.originate.graphit.metrics.battery;
 
 public class BatteryEntry {
-    private float percentage;
     private long time;
+    private int percentage;
+    private boolean critical;
 
     public BatteryEntry() {
     }
 
-    public BatteryEntry(float pct, long time) {
+    public BatteryEntry(long time, int pct, boolean critical) {
         this.percentage = pct;
         this.time = time;
-    }
-
-    public void setPercentage(float pct) {
-        this.percentage = pct;
-    }
-
-    public float getPercentage() {
-        return this.percentage;
+        this.critical = critical;
     }
 
     public void setTime(long time) {
@@ -26,5 +20,21 @@ public class BatteryEntry {
 
     public long getTime() {
         return this.time;
+    }
+
+    public void setPercentage(int pct) {
+        this.percentage = pct;
+    }
+
+    public int getPercentage() {
+        return this.percentage;
+    }
+
+    public void setCritical(boolean critical) {
+        this.critical = critical;
+    }
+
+    public boolean getCritical() {
+        return this.critical;
     }
 }

@@ -1,42 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="pref_collapseFrequency">
-        <item>One day</item>
-        <item>One week</item>
-        <item>One month</item>
-        <item>Three month</item>
-        <item>Six month</item>
-        <item>One year</item>
+    <string-array name="pref_batteryCollapseFrequency">
+        <item>DEBUG VALUE</item>
+        <item>One Day</item>
+        <item>One Week</item>
+        <item>One Month</item>
+        <item>Three Months</item>
+        <item>Six Month</item>
+        <item>One Year</item>
+        <item>Two Years</item>
+        <item>Three Years</item>
         <item>Never</item>
     </string-array>
-    <string-array name="pref_collapseFrequencyValues">
-        <item>1</item>
-        <item>7</item>
-        <item>30</item>
-        <item>90</item>
-        <item>180</item>
-        <item>360</item>
-        <item>0</item>
-    </string-array>
-
-    <string-array name="pref_purgeFrequency">
-        <item>One day</item>
-        <item>One week</item>
-        <item>One month</item>
-        <item>Three month</item>
-        <item>Six month</item>
-        <item>One year</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_purgeFrequencyValues">
-        <item>1</item>
-        <item>7</item>
-        <item>30</item>
-        <item>90</item>
-        <item>180</item>
-        <item>360</item>
-        <item>0</item>
+    <string-array name="pref_batteryCollapseFrequencyValues">
+        <item>300000</item>
+        <item>86400000</item>
+        <item>604800000</item>
+        <item>2592000000</item>
+        <item>7776000000</item>
+        <item>15520000000000</item>
+        <item>311040000000000</item>
+        <item>622080000000000</item>
+        <item>933120000000000</item>
+        <item>-1</item>
     </string-array>
 
 </resources>

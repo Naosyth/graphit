@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.originate.graphit.metrics.MetricsList;
 import com.originate.graphit.metrics.battery.BatteryModel;
 import com.originate.graphit.metrics.MetricModel;
 import com.originate.graphit.metrics.screenUsage.ScreenUsageModel;
@@ -26,12 +25,13 @@ import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
-    private ArrayList<MetricModel> metricsList = MetricsList.getInstance().getList();
+    private ArrayList<MetricModel> metricsList = new ArrayList<MetricModel>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        populateMetricsList();
         startBackgroundService();
 
         setContentView(R.layout.activity_main);
@@ -42,10 +42,15 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    private void populateMetricsList() {
+        metricsList.add(new BatteryModel(this));
+        metricsList.add(new ScreenUsageModel(this));
+    }
+
     private void startBackgroundService() {
         Intent intent = new Intent(this, DataCollectionService.class);
         intent.putParcelableArrayListExtra("metricsList", metricsList);
-        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+        PendingIntent pintent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         Calendar cal = Calendar.getInstance();
         AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 60*1000, pintent);
