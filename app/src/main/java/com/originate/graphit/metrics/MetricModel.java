@@ -22,9 +22,7 @@ public abstract class MetricModel implements Parcelable {
         return this.enableKey;
     }
 
-    public void clickHandler(Context context) {
-        // Should be implemented in the extension class
-    }
+    public abstract void clickHandler(Context context);
 
     public void toggleHandler(Context context, boolean isChecked) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -35,7 +33,7 @@ public abstract class MetricModel implements Parcelable {
 
     public abstract void recordData(Context context);
 
-    public abstract void collapseData(Context context);
+    public abstract int collapseData(Context context);
 
     @Override
     public int describeContents() {

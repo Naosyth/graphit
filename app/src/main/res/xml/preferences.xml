@@ -5,13 +5,13 @@
     tools:context="com.originate.graphit.SettingsActivity">
 
     <PreferenceCategory
-        android:title="@string/pref_batterySettingsTitle">
+        android:title="@string/pref_battery_settingsTitle">
 
         <ListPreference
             android:key="@string/pref_battery_collapseDelay"
-            android:title="@string/pref_batteryCollapseTitle"
-            android:summary="@string/pref_batteryCollapseSummary"
-            android:dialogTitle="@string/pref_batteryCollapseDialogTitle"
+            android:title="@string/pref_battery_collapseTitle"
+            android:summary="@string/pref_battery_collapseSummary"
+            android:dialogTitle="@string/pref_battery_collapseDialogTitle"
             android:entries="@array/pref_batteryCollapseFrequency"
             android:entryValues="@array/pref_batteryCollapseFrequencyValues"
             android:defaultValue="7776000000"/>

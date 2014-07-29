@@ -4,9 +4,10 @@
     <string name="app_name">GraphIt</string>
     <string name="action_settings">Settings</string>
 
-    <string name="pref_batterySettingsTitle">Battery Tracking Options</string>
-    <string name="pref_batteryCollapseTitle">Data Collapsing Frequency</string>
-    <string name="pref_batteryCollapseSummary">Deletes old non-critical data entries</string>
-    <string name="pref_batteryCollapseDialogTitle">Select a frequency</string>
+    <string name="pref_battery_listName">Battery</string>
+    <string name="pref_battery_settingsTitle">Battery Tracking Options</string>
+    <string name="pref_battery_collapseTitle">Data Collapsing Frequency</string>
+    <string name="pref_battery_collapseSummary">Deletes old non-critical data entries</string>
+    <string name="pref_battery_collapseDialogTitle">Select a frequency</string>
 
 </resources>

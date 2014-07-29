@@ -119,8 +119,9 @@ public class BatteryDBHelper extends MetricDBHelper {
         String countQuery = "SELECT * FROM " + TABLE_BATTERY;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
         db.close();
-        return cursor.getCount();
+        return count;
     }
 
     public int updateEntry(BatteryEntry entry) {
@@ -131,8 +132,6 @@ public class BatteryDBHelper extends MetricDBHelper {
         values.put(KEY_CRITICAL, entry.getCritical());
         int numUpdated = db.update(TABLE_BATTERY, values, KEY_TIME + " = ?", new String[] { String.valueOf(entry.getTime()) });
         db.close();
-
-        Log.v("GRAPHIT", "Attempting to update entry with time: " + entry.getTime());
         return numUpdated;
     }
 

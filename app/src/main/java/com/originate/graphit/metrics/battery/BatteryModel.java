@@ -8,7 +8,6 @@ import android.os.BatteryManager;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.originate.graphit.R;
@@ -18,8 +17,10 @@ import java.util.Calendar;
 import java.util.List;
 
 public class BatteryModel extends MetricModel {
-    public BatteryModel() {
-        super("Battery", "pref_battery_enabled");
+    public static String collapseDelayKey;
+    public BatteryModel(Context context) {
+        super(context.getString(R.string.pref_battery_listName), context.getString(R.string.pref_battery_enabled));
+        collapseDelayKey = context.getString(R.string.pref_battery_collapseDelay);
     }
 
     public BatteryModel(Parcel in) {
@@ -38,11 +39,14 @@ public class BatteryModel extends MetricModel {
 
     @Override
     public void recordData(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!settings.getBoolean(this.getEnableKey(), false))
+            return;
+
         collapseData(context);
 
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(null, ifilter);
-
         if (batteryStatus == null)
             return;
 
@@ -52,69 +56,47 @@ public class BatteryModel extends MetricModel {
         Calendar calendar = Calendar.getInstance();
         BatteryDBHelper db = new BatteryDBHelper(context);
         BatteryEntry entry = new BatteryEntry(calendar.getTimeInMillis()/1000, batteryPct, false);
-
-        if (db.getLastEntry() != null && db.getLastEntry().getPercentage() == entry.getPercentage()) {
-            Log.v("GRAPHIT", "No change");
+        if (db.getLastEntry() != null && db.getLastEntry().getPercentage() == entry.getPercentage())
             return;
-        }
-
-        Log.v("GRAPHIT", "Logging a point " + entry.getPercentage());
 
         db.addEntry(entry);
         detectCritical(context, db.getLastEntries(3));
     }
 
-    private void detectCritical(Context context, List<BatteryEntry> entries) {
-        if (entries.size() < 3)
-            return;
-
+    private boolean detectCritical(Context context, List<BatteryEntry> entries) {
         BatteryEntry criticalEntry = null;
-        boolean isCritical = false;
-        // Case 1: Unplugged from fully charged state
-        if (Float.compare(entries.get(2).getPercentage(), entries.get(1).getPercentage()) == 0) {
-            isCritical = true;
+
+        if (entries.size() == 1) {
             criticalEntry = entries.get(1);
-        }
-        // Case 2: Unplugged from charging state
-        else if (entries.get(1).getPercentage() < entries.get(0).getPercentage() && entries.get(1).getPercentage() < entries.get(2).getPercentage()) {
-            isCritical = true;
+        } else if (entries.size() >= 3
+                && Float.compare(entries.get(2).getPercentage(), entries.get(1).getPercentage()) == 0 // Case 1: Unplugged from fully charged state
+                || entries.get(1).getPercentage() < entries.get(0).getPercentage() && entries.get(1).getPercentage() < entries.get(2).getPercentage() // Case 2: Unplugged from charging state
+                || entries.get(1).getPercentage() > entries.get(0).getPercentage() && entries.get(1).getPercentage() > entries.get(2).getPercentage()) { // Case 3: Plugged in from discharging state
             criticalEntry = entries.get(1);
-        }
-        // Case 3: Plugged in from discharging state
-        else if (entries.get(1).getPercentage() > entries.get(0).getPercentage() && entries.get(1).getPercentage() > entries.get(2).getPercentage()) {
-            isCritical = true;
-            criticalEntry = entries.get(1);
-        }
-        // Case 4: Only data point
-        else if (entries.size() == 1) {
-            isCritical = true;
-            criticalEntry = entries.get(0);
         }
 
-        if (isCritical) {
+        if (criticalEntry != null) {
             BatteryDBHelper db = new BatteryDBHelper(context);
             criticalEntry.setCritical(true);
-            int debug = db.updateEntry(criticalEntry);
-            Log.v("GRAPHIT", "Critical point detected " + criticalEntry.getPercentage() + ", " + debug);
+            db.updateEntry(criticalEntry);
+            return true;
         }
+        return false;
     }
 
     @Override
-    public void collapseData(Context context) {
+    public int collapseData(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences( context );
-        long collapseDelay = Long.parseLong(settings.getString(context.getString(R.string.pref_battery_collapseDelay), "-1"));
-
-        BatteryDBHelper db = new BatteryDBHelper( context );
+        long collapseDelay = Long.parseLong(settings.getString(collapseDelayKey, "-1"));
+        BatteryDBHelper db = new BatteryDBHelper(context);
         Calendar calendar = Calendar.getInstance();
-        int collapsed = db.collapseOldEntries( (calendar.getTimeInMillis()-collapseDelay)/1000 );
-        Log.v("GRAPHIT", "Collapsed " + collapsed + " entries older than " + (calendar.getTimeInMillis()-collapseDelay)/1000);
+        return db.collapseOldEntries((calendar.getTimeInMillis()-collapseDelay)/1000);
     }
 
     public static final Parcelable.Creator<BatteryModel> CREATOR = new Parcelable.Creator<BatteryModel>() {
         public BatteryModel createFromParcel(Parcel in) {
             return new BatteryModel(in);
         }
-
         public BatteryModel[] newArray (int size) {
             return new BatteryModel[size];
         }

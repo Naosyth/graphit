@@ -10,7 +10,7 @@ import com.originate.graphit.metrics.MetricModel;
 public class ScreenUsageModel extends MetricModel {
     private String databaseKey;
 
-    public ScreenUsageModel() {
+    public ScreenUsageModel(Context context) {
         super("Screen Usage", "pref_screenUsage_enabled");
         databaseKey = "pref_screenUsage_dbkey";
     }
@@ -31,8 +31,9 @@ public class ScreenUsageModel extends MetricModel {
     }
 
     @Override
-    public void collapseData(Context context) {
+    public int collapseData(Context context) {
         //TODO: Collapse screen usage data
+        return 0;
     }
 
     public static final Parcelable.Creator<ScreenUsageModel> CREATOR

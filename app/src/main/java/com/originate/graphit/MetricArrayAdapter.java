@@ -33,7 +33,7 @@ public class MetricArrayAdapter extends ArrayAdapter<MetricModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
-        final MetricModel model = (MetricModel) list.get(position);
+        final MetricModel model = list.get(position);
 
         if (convertView == null) {
             LayoutInflater inflator = context.getLayoutInflater();
