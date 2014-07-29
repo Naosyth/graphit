@@ -31,7 +31,7 @@ public class ScreenUsageModel extends MetricModel {
     }
 
     @Override
-    public void collapseData() {
+    public void collapseData(Context context) {
         //TODO: Collapse screen usage data
     }
 
@@ -45,11 +45,6 @@ public class ScreenUsageModel extends MetricModel {
             return new ScreenUsageModel[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
