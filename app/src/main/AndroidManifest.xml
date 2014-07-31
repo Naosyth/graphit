@@ -32,12 +32,16 @@
             android:exported="true" >
         </service>
 
-        <receiver android:name=".BootBroadcastReceiver">
+        <receiver android:name=".BootBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".metrics.battery.BatteryGraphActivity"
+            android:label="@string/battery_graph_title" >
+        </activity>
     </application>
 
 </manifest>

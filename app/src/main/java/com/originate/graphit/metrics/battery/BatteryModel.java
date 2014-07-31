@@ -29,12 +29,9 @@ public class BatteryModel extends MetricModel {
 
     @Override
     public void clickHandler(Context context) {
-        // Temporary test code to make sure entries are written to the db:
-        BatteryDBHelper db = new BatteryDBHelper(context);
-        String debug = "There are " + db.getEntryCount() + " entries.";
-        Toast.makeText(context, debug, Toast.LENGTH_SHORT).show();
-
-        //TODO: Launch graph activity for battery data
+        Intent graphIntent = new Intent(context, BatteryGraphActivity.class);
+        graphIntent.putExtra("model", this);
+        context.startActivity(graphIntent);
     }
 
     @Override
@@ -43,7 +40,8 @@ public class BatteryModel extends MetricModel {
         if (!settings.getBoolean(this.getEnableKey(), false))
             return;
 
-        collapseData(context);
+        int numCollapsed = collapseData(context);
+        Toast.makeText(context, "Collapsing " + numCollapsed + " entries", Toast.LENGTH_LONG).show();
 
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(null, ifilter);
@@ -59,6 +57,8 @@ public class BatteryModel extends MetricModel {
         if (db.getLastEntry() != null && db.getLastEntry().getPercentage() == entry.getPercentage())
             return;
 
+        Toast.makeText(context, "Adding a point", Toast.LENGTH_SHORT).show();
+
         db.addEntry(entry);
         detectCritical(context, db.getLastEntries(3));
     }
@@ -67,11 +67,11 @@ public class BatteryModel extends MetricModel {
         BatteryEntry criticalEntry = null;
 
         if (entries.size() == 1) {
-            criticalEntry = entries.get(1);
+            criticalEntry = entries.get(0);
         } else if (entries.size() >= 3
-                && Float.compare(entries.get(2).getPercentage(), entries.get(1).getPercentage()) == 0 // Case 1: Unplugged from fully charged state
+                && (Float.compare(entries.get(2).getPercentage(), entries.get(1).getPercentage()) == 0 // Case 1: Unplugged from fully charged state
                 || entries.get(1).getPercentage() < entries.get(0).getPercentage() && entries.get(1).getPercentage() < entries.get(2).getPercentage() // Case 2: Unplugged from charging state
-                || entries.get(1).getPercentage() > entries.get(0).getPercentage() && entries.get(1).getPercentage() > entries.get(2).getPercentage()) { // Case 3: Plugged in from discharging state
+                || entries.get(1).getPercentage() > entries.get(0).getPercentage() && entries.get(1).getPercentage() > entries.get(2).getPercentage())) { // Case 3: Plugged in from discharging state
             criticalEntry = entries.get(1);
         }
 
@@ -88,9 +88,22 @@ public class BatteryModel extends MetricModel {
     public int collapseData(Context context) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences( context );
         long collapseDelay = Long.parseLong(settings.getString(collapseDelayKey, "-1"));
+
+        if (collapseDelay == -1)
+            return 0;
+
         BatteryDBHelper db = new BatteryDBHelper(context);
         Calendar calendar = Calendar.getInstance();
+        int debug = db.testCollapseOldEntries((calendar.getTimeInMillis()-collapseDelay)/1000);
+        if (debug > 0) {
+            Toast.makeText(context, "Found " + debug + " entries to delete with time <= " + (calendar.getTimeInMillis()-collapseDelay)/1000, Toast.LENGTH_LONG).show();
+        }
         return db.collapseOldEntries((calendar.getTimeInMillis()-collapseDelay)/1000);
+    }
+
+    public List<BatteryEntry> getData(Context context) {
+        BatteryDBHelper db = new BatteryDBHelper(context);
+        return db.getAllEntries();
     }
 
     public static final Parcelable.Creator<BatteryModel> CREATOR = new Parcelable.Creator<BatteryModel>() {
