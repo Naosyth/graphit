@@ -12,17 +12,22 @@ import java.util.List;
 
 public class ScreenUsageDBHelper extends MetricDBHelper {
     private static final String TABLE_SCREEN = "screen_usage";
-    private static final String KEY_ON = "on";
+    private static final String KEY_STATE = "state";
     private static final String KEY_TIME = "_id";
+
     public ScreenUsageDBHelper(Context context) {
         super(context);
+
+        String query = "CREATE TABLE IF NOT EXISTS screen_usage (_id INTEGER PRIMARY KEY, state INTEGER)";
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(query);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_SCREEN_USAGE_TABLE = "CREATE TABLE " + TABLE_SCREEN + "("
                 + KEY_TIME + " INTEGER PRIMARY KEY,"
-                + KEY_ON + " INTEGER)";
+                + KEY_STATE + " INTEGER)";
         db.execSQL(CREATE_SCREEN_USAGE_TABLE);
     }
 
@@ -36,14 +41,14 @@ public class ScreenUsageDBHelper extends MetricDBHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_TIME, entry.getTime());
-        values.put(KEY_ON, entry.getOn() ? 1 : 0);
+        values.put(KEY_STATE, entry.getOn() ? 1 : 0);
         db.insert(TABLE_SCREEN, null, values);
         db.close();
     }
 
     public ScreenEntry getEntry(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_SCREEN, new String[] { KEY_TIME, KEY_ON }, KEY_TIME + "=?", new String[] { String.valueOf(id) }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_SCREEN, new String[] { KEY_TIME, KEY_STATE }, KEY_TIME + "=?", new String[] { String.valueOf(id) }, null, null, null, null);
         if (!cursor.moveToFirst())
             return null;
 
@@ -80,7 +85,7 @@ public class ScreenUsageDBHelper extends MetricDBHelper {
         do {
             ScreenEntry entry = new ScreenEntry();
             entry.setTime((long) cursor.getInt(0));
-            entry.setOn(cursor.getInt(1) > 1 ? true : false);
+            entry.setOn(cursor.getInt(1) == 1);
             entryList.add(entry);
         } while(cursor.moveToNext());
         db.close();
@@ -97,7 +102,7 @@ public class ScreenUsageDBHelper extends MetricDBHelper {
             do {
                 ScreenEntry entry = new ScreenEntry();
                 entry.setTime((long)cursor.getInt(0));
-                entry.setOn(cursor.getInt(1) > 0 ? true : false);
+                entry.setOn(cursor.getInt(1) == 1);
                 entryList.add(entry);
             } while(cursor.moveToNext());
         }
@@ -118,7 +123,7 @@ public class ScreenUsageDBHelper extends MetricDBHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_TIME, entry.getTime());
-        values.put(KEY_ON, entry.getOn());
+        values.put(KEY_STATE, entry.getOn());
         int numUpdated = db.update(TABLE_SCREEN, values, KEY_TIME + " = ?", new String[] { String.valueOf(entry.getTime()) });
         db.close();
         return numUpdated;

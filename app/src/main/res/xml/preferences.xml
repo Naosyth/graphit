@@ -12,8 +12,21 @@
             android:title="@string/pref_battery_collapseTitle"
             android:summary="@string/pref_battery_collapseSummary"
             android:dialogTitle="@string/pref_battery_collapseDialogTitle"
-            android:entries="@array/pref_batteryCollapseFrequency"
-            android:entryValues="@array/pref_batteryCollapseFrequencyValues"
+            android:entries="@array/pref_metricCollapseFrequency"
+            android:entryValues="@array/pref_metricCollapseFrequencyValues"
+            android:defaultValue="7776000000"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_screen_settingsTitle">
+
+        <ListPreference
+            android:key="@string/pref_screen_collapseDelay"
+            android:title="@string/pref_screen_collapseTitle"
+            android:summary="@string/pref_screen_collapseSummary"
+            android:dialogTitle="@string/pref_screen_collapseDialogTitle"
+            android:entries="@array/pref_metricCollapseFrequency"
+            android:entryValues="@array/pref_metricCollapseFrequencyValues"
             android:defaultValue="7776000000"/>
     </PreferenceCategory>
 
