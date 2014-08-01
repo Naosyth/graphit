@@ -149,12 +149,6 @@ public class BatteryDBHelper extends MetricDBHelper {
         return numDeleted;
     }
 
-    public int testCollapseOldEntries(long time) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_BATTERY + " WHERE " + KEY_TIME + " <= " + time + " AND " + KEY_CRITICAL + " = 0", null);
-        return cursor.getCount();
-    }
-
     public int collapseOldEntries(long time) {
         SQLiteDatabase db = this.getWritableDatabase();
         int numCollapsed = db.delete(TABLE_BATTERY, KEY_TIME + " <= ? AND " + KEY_CRITICAL + " = 0", new String[] { String.valueOf(time) });
