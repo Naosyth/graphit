@@ -1,4 +1,4 @@
-package com.originate.graphit.metrics.battery;
+package com.originate.graphit.metrics.screenUsage;
 
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -21,13 +21,14 @@ import com.androidplot.ui.XLayoutStyle;
 import com.androidplot.ui.YLayoutStyle;
 import com.androidplot.util.PaintUtils;
 import com.androidplot.util.PixelUtils;
+import com.androidplot.xy.BoundaryMode;
+import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
-import com.androidplot.xy.*;
-
+import com.androidplot.xy.XYStepMode;
 import com.originate.graphit.R;
 
-import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
@@ -38,22 +39,22 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class BatteryGraphActivity extends ActionBarActivity {
-    private static BatteryModel model;
+public class ScreenGraphActivity extends ActionBarActivity {
+    private static ScreenUsageModel model;
     private static List<Long> timeValues;
-    private static List<Integer> chargeValues;
-    private static BatteryGraphFragment fragment;
+    private static List<Integer> screenValues;
+    private static ScreenGraphFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_battery_graph);
+        setContentView(R.layout.activity_screen_graph);
 
         model = this.getIntent().getParcelableExtra("model");
         refreshData();
 
         if (savedInstanceState == null) {
-            fragment = new BatteryGraphFragment();
+            fragment = new ScreenGraphFragment();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)
                     .commit();
@@ -77,18 +78,30 @@ public class BatteryGraphActivity extends ActionBarActivity {
     }
 
     private void refreshData() {
-        List<BatteryEntry> entryList = model.getData(this);
+        List<ScreenEntry> entryList = model.getData(this);
+        entryList = formatEntriesForDisplay(entryList);
 
         timeValues = new ArrayList<Long>();
-        chargeValues = new ArrayList<Integer>();
+        screenValues = new ArrayList<Integer>();
 
-        for (BatteryEntry entry : entryList) {
+        for (ScreenEntry entry : entryList) {
             timeValues.add(entry.getTime());
-            chargeValues.add(entry.getPercentage());
+            screenValues.add(entry.getOn() ? 1 : 0);
         }
     }
 
-    public static class BatteryGraphFragment extends Fragment {
+    private List<ScreenEntry> formatEntriesForDisplay(List<ScreenEntry> entries) {
+        List<ScreenEntry> newList = new ArrayList<ScreenEntry>();
+        for (ScreenEntry entry : entries) {
+            newList.add(new ScreenEntry(entry.getTime(), !entry.getOn()));
+            newList.add(entry);
+        }
+        if (entries.size() > 0)
+            newList.add(new ScreenEntry(Calendar.getInstance().getTimeInMillis()/1000, newList.get(newList.size()-1).getOn()));
+        return newList;
+    }
+
+    public static class ScreenGraphFragment extends Fragment {
         private XYPlot plot;
         private PointF minXY;
         private PointF maxXY;
@@ -96,16 +109,16 @@ public class BatteryGraphActivity extends ActionBarActivity {
         private float domainLeftBoundary;
         private float domainRightBoundary;
 
-        private static final int rangeMax = 100;
-        private static final int rangeMin = 0;
+        private static final int rangeMax = 2;
+        private static final int rangeMin = -1;
 
-        public BatteryGraphFragment() {
+        public ScreenGraphFragment() {
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_battery_graph, container, false);
-            plot = (XYPlot) rootView.findViewById(R.id.batteryPlot);
+            View rootView = inflater.inflate(R.layout.fragment_screen_graph, container, false);
+            plot = (XYPlot) rootView.findViewById(R.id.screenPlot);
 
             setupPlot();
 
@@ -126,8 +139,8 @@ public class BatteryGraphActivity extends ActionBarActivity {
 
             // Range Formatting
             PaintUtils.setFontSizeDp(plot.getGraphWidget().getRangeLabelPaint(), 17);
-            plot.setTicksPerRangeLabel(1);
-            plot.setRangeStep(XYStepMode.INCREMENT_BY_VAL, 25);
+            plot.setRangeStep(XYStepMode.SUBDIVIDE, 2);
+            plot.getGraphWidget().setTicksPerRangeLabel(1);
             plot.getGraphWidget().setRangeGridLinePaint(new Paint(Color.BLACK));
             plot.getGraphWidget().setRangeOriginLinePaint(new Paint(Color.BLACK));
             plot.getGraphWidget().setRangeLabelWidth(PixelUtils.dpToPix(25));
@@ -137,16 +150,29 @@ public class BatteryGraphActivity extends ActionBarActivity {
 
             // Domain Formatting
             PaintUtils.setFontSizeDp(plot.getGraphWidget().getDomainLabelPaint(), 9);
-            plot.getGraphWidget().setTicksPerDomainLabel(3);
+            plot.setDomainStep(XYStepMode.SUBDIVIDE, 4);
+            plot.getGraphWidget().setTicksPerDomainLabel(1);
             plot.getGraphWidget().setDomainLabelVerticalOffset(PixelUtils.dpToPix(10));
             plot.getGraphWidget().getDomainLabelPaint().setColor(Color.GRAY);
             plot.getGraphWidget().setDomainGridLinePaint(new Paint(Color.BLACK));
             plot.getGraphWidget().setDomainOriginLinePaint(new Paint(Color.BLACK));
 
             LineAndPointFormatter formatter = new LineAndPointFormatter(Color.BLACK, Color.BLACK, null, null);
+            //formatter.getLinePaint().setStrokeWidth(PixelUtils.dpToPix(5));
+            formatter.getVertexPaint().setStrokeWidth(0);
             plot.addSeries(series, formatter);
 
-            plot.setRangeValueFormat(new DecimalFormat("0'%'"));
+            plot.setRangeValueFormat(new Format() {
+                @Override
+                public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+                    return new StringBuffer(((Number)obj).intValue() <= 0 ? "off" : "on");
+                }
+
+                @Override
+                public Object parseObject(String source, ParsePosition pos) {
+                    return null;
+                }
+            });
             plot.setDomainValueFormat(new Format() {
                 private SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yy k:mm");
 
@@ -256,12 +282,12 @@ public class BatteryGraphActivity extends ActionBarActivity {
         }
 
         public void setupPlot() {
-            if (timeValues == null || chargeValues == null ||
-                    timeValues.size() == 0 || chargeValues.size() == 0)
+            if (timeValues == null || screenValues == null ||
+                    timeValues.size() == 0 || screenValues.size() == 0)
                 return;
 
             plot.removeSeries(series);
-            series = new SimpleXYSeries(timeValues, chargeValues, "Battery Level");
+            series = new SimpleXYSeries(timeValues, screenValues, "Screen Usage");
             plot.addSeries(series, new LineAndPointFormatter(Color.BLACK, Color.BLACK, null, null));
 
             long minTimeValue = Collections.min(timeValues);

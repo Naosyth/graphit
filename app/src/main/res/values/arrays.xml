@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="pref_batteryCollapseFrequency">
+    <string-array name="pref_metricCollapseFrequency">
         <item>DEBUG VALUE</item>
         <item>One Day</item>
         <item>One Week</item>
@@ -11,7 +11,7 @@
         <item>One Year</item>
         <item>Never</item>
     </string-array>
-    <string-array name="pref_batteryCollapseFrequencyValues">
+    <string-array name="pref_metricCollapseFrequencyValues">
         <item>300000</item>
         <item>86400000</item>
         <item>604800000</item>

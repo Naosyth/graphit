@@ -2,4 +2,7 @@
 <resources>
     <string name="pref_battery_collapseDelay">battery_collapseDelay</string>
     <string name="pref_battery_enabled">battery_enabled</string>
+
+    <string name="pref_screen_collapseDelay">screen_collapseDelay</string>
+    <string name="pref_screen_enabled">screen_enabled</string>
 </resources>

@@ -18,6 +18,7 @@ import java.util.List;
 
 public class BatteryModel extends MetricModel {
     public static String collapseDelayKey;
+
     public BatteryModel(Context context) {
         super(context.getString(R.string.pref_battery_listName), context.getString(R.string.pref_battery_enabled));
         collapseDelayKey = context.getString(R.string.pref_battery_collapseDelay);

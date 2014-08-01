@@ -42,6 +42,10 @@
             android:name=".metrics.battery.BatteryGraphActivity"
             android:label="@string/battery_graph_title" >
         </activity>
+        <activity
+            android:name=".metrics.screenUsage.ScreenGraphActivity"
+            android:label="@string/screen_graph_title" >
+        </activity>
     </application>
 
 </manifest>
