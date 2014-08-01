@@ -44,17 +44,6 @@ public class ScreenUsageModel extends MetricModel {
 
         collapseData(context);
 
-        //IntentFilter ifilter1 = new IntentFilter(Intent.ACTION_SCREEN_ON);
-        //IntentFilter ifilter2 = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-
-
-        //if (ifilter1 == null || ifilter2 == null) {
-        //  return;
-        //}
-
-        //Intent screenOnIntent = context.registerReceiver(null, ifilter1);
-        //Intent screenOffIntent = context.registerReceiver(null, ifilter2);
-
         boolean screenOn;
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -74,11 +63,6 @@ public class ScreenUsageModel extends MetricModel {
 
     @Override
     public int collapseData(Context context) {
-        /*SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences( context );
-        long collapseDelay = Long.parseLong(settings.getString(collapseDelayKey, "-1"));
-        ScreenUsageDBHelper db = new ScreenUsageDBHelper(context);
-        Calendar calendar = Calendar.getInstance();
-        return db.collapseOldEntries((calendar.getTimeInMillis()-collapseDelay)/1000);*/
         return 0;
     }
 

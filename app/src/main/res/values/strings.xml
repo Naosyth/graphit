@@ -11,10 +11,6 @@
     <string name="pref_battery_collapseDialogTitle">Select a frequency</string>
     <string name="battery_graph_title">Battery Graph</string>
     <string name="pref_screen_listName">Screen Usage</string>
-    <string name="pref_screen_settingsTitle">Screen Usage Tracking Options</string>
-    <string name="pref_screen_collapseTitle">Data Collapsing Frequency</string>
-    <string name="pref_screen_collapseSummary">Deletes old non-critical data entries</string>
-    <string name="pref_screen_collapseDialogTitle">Select a frequency</string>
     <string name="screen_graph_title">Screen Usage Graph</string>
 
 </resources>

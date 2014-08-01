@@ -8,7 +8,6 @@ import android.os.BatteryManager;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
 import com.originate.graphit.R;
 import com.originate.graphit.metrics.MetricModel;
@@ -41,8 +40,7 @@ public class BatteryModel extends MetricModel {
         if (!settings.getBoolean(this.getEnableKey(), false))
             return;
 
-        int numCollapsed = collapseData(context);
-        Toast.makeText(context, "Collapsing " + numCollapsed + " entries", Toast.LENGTH_LONG).show();
+        collapseData(context);
 
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(null, ifilter);
@@ -57,8 +55,6 @@ public class BatteryModel extends MetricModel {
         BatteryEntry entry = new BatteryEntry(calendar.getTimeInMillis()/1000, batteryPct, false);
         if (db.getLastEntry() != null && db.getLastEntry().getPercentage() == entry.getPercentage())
             return;
-
-        Toast.makeText(context, "Adding a point", Toast.LENGTH_SHORT).show();
 
         db.addEntry(entry);
         detectCritical(context, db.getLastEntries(3));
@@ -95,10 +91,6 @@ public class BatteryModel extends MetricModel {
 
         BatteryDBHelper db = new BatteryDBHelper(context);
         Calendar calendar = Calendar.getInstance();
-        int debug = db.testCollapseOldEntries((calendar.getTimeInMillis()-collapseDelay)/1000);
-        if (debug > 0) {
-            Toast.makeText(context, "Found " + debug + " entries to delete with time <= " + (calendar.getTimeInMillis()-collapseDelay)/1000, Toast.LENGTH_LONG).show();
-        }
         return db.collapseOldEntries((calendar.getTimeInMillis()-collapseDelay)/1000);
     }
 
