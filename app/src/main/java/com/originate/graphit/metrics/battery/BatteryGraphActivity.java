@@ -39,6 +39,8 @@ import java.util.Date;
 import java.util.List;
 
 public class BatteryGraphActivity extends ActionBarActivity {
+    private static final String TAG_BATTERY_FRAGMENT = "battery_fragment";
+
     private static BatteryModel model;
     private static List<Long> timeValues;
     private static List<Integer> chargeValues;
@@ -52,11 +54,13 @@ public class BatteryGraphActivity extends ActionBarActivity {
         model = this.getIntent().getParcelableExtra("model");
         refreshData();
 
-        if (savedInstanceState == null) {
+        fragment = (BatteryGraphFragment) getSupportFragmentManager()
+                .findFragmentByTag(TAG_BATTERY_FRAGMENT);
+
+        if (fragment == null) {
             fragment = new BatteryGraphFragment();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment)
-                    .commit();
+                    .replace(R.id.container, fragment, TAG_BATTERY_FRAGMENT).commit();
         }
     }
 
@@ -100,6 +104,12 @@ public class BatteryGraphActivity extends ActionBarActivity {
         private static final int rangeMin = 0;
 
         public BatteryGraphFragment() {
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setRetainInstance(true);
         }
 
         @Override
