@@ -40,6 +40,8 @@ import java.util.Date;
 import java.util.List;
 
 public class ScreenGraphActivity extends ActionBarActivity {
+    private static final String TAG_SCREEN_FRAGMENT = "screen_fragment";
+
     private static ScreenUsageModel model;
     private static List<Long> timeValues;
     private static List<Integer> screenValues;
@@ -53,11 +55,13 @@ public class ScreenGraphActivity extends ActionBarActivity {
         model = this.getIntent().getParcelableExtra("model");
         refreshData();
 
-        if (savedInstanceState == null) {
+        fragment = (ScreenGraphFragment) getSupportFragmentManager()
+                .findFragmentByTag(TAG_SCREEN_FRAGMENT);
+
+        if (fragment == null) {
             fragment = new ScreenGraphFragment();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment)
-                    .commit();
+                    .replace(R.id.container, fragment, TAG_SCREEN_FRAGMENT).commit();
         }
     }
 
@@ -113,6 +117,12 @@ public class ScreenGraphActivity extends ActionBarActivity {
         private static final int rangeMin = -1;
 
         public ScreenGraphFragment() {
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setRetainInstance(true);
         }
 
         @Override
