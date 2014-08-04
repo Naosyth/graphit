@@ -5,4 +5,6 @@
 
     <string name="pref_screen_collapseDelay">screen_collapseDelay</string>
     <string name="pref_screen_enabled">screen_enabled</string>
+
+    <string name="pref_network_enabled">network_enabled</string>
 </resources>
