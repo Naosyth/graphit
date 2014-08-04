@@ -17,6 +17,7 @@ import android.widget.ListView;
 
 import com.originate.graphit.metrics.battery.BatteryModel;
 import com.originate.graphit.metrics.MetricModel;
+import com.originate.graphit.metrics.network.NetworkModel;
 import com.originate.graphit.metrics.screenUsage.ScreenUsageModel;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class MainActivity extends ActionBarActivity {
     private void populateMetricsList() {
         metricsList.add(new BatteryModel(this));
         metricsList.add(new ScreenUsageModel(this));
+        metricsList.add(new NetworkModel(this));
     }
 
     private void startBackgroundService() {

@@ -46,6 +46,10 @@
             android:name=".metrics.screenUsage.ScreenGraphActivity"
             android:label="@string/screen_graph_title" >
         </activity>
+        <activity
+            android:name=".metrics.network.NetworkGraphActivity"
+            android:label="@string/network_graph_title" > >
+        </activity>
     </application>
 
 </manifest>

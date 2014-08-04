@@ -12,5 +12,7 @@
     <string name="battery_graph_title">Battery Graph</string>
     <string name="pref_screen_listName">Screen Usage</string>
     <string name="screen_graph_title">Screen Usage Graph</string>
+    <string name="pref_network_listName">Network Usage</string>
+    <string name="network_graph_title">Network Usage Graph</string>
 
 </resources>
