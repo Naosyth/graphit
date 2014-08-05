@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.view.Display;
 import android.view.WindowManager;
 import android.os.Build;
+import android.widget.Toast;
 
 import com.originate.graphit.R;
 import com.originate.graphit.metrics.MetricModel;
@@ -19,10 +20,12 @@ import java.util.List;
 
 public class ScreenUsageModel extends MetricModel {
     public static String collapseDelayKey;
+    public static String deleteDelayKey;
 
     public ScreenUsageModel(Context context) {
         super(context.getString(R.string.pref_screen_listName), context.getString(R.string.pref_screen_enabled));
-        collapseDelayKey = context.getString(R.string.pref_battery_collapseDelay);
+        collapseDelayKey = context.getString(R.string.pref_screen_collapseDelay);
+        deleteDelayKey = context.getString(R.string.pref_screen_deleteDelay);
     }
 
     public ScreenUsageModel(Parcel in) {
@@ -31,6 +34,12 @@ public class ScreenUsageModel extends MetricModel {
 
     @Override
     public void clickHandler(Context context) {
+        ScreenUsageDBHelper db = new ScreenUsageDBHelper(context);
+        if (db.getEntryCount() < 2) {
+            Toast.makeText(context, R.string.error_not_enough_data_entries, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         Intent graphIntent = new Intent(context, ScreenGraphActivity.class);
         graphIntent.putExtra("model", this);
         context.startActivity(graphIntent);
@@ -42,7 +51,8 @@ public class ScreenUsageModel extends MetricModel {
         if (!settings.getBoolean(this.getEnableKey(), false))
             return;
 
-        collapseData(context);
+        //collapseData(context);
+        deleteData(context);
 
         boolean screenOn;
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
@@ -64,6 +74,19 @@ public class ScreenUsageModel extends MetricModel {
     @Override
     public int collapseData(Context context) {
         return 0;
+    }
+
+    @Override
+    public int deleteData(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        long deleteDelay = Long.parseLong(settings.getString(deleteDelayKey, "-1"));
+
+        if (deleteDelay == -1)
+            return 0;
+
+        ScreenUsageDBHelper db = new ScreenUsageDBHelper(context);
+        Calendar calendar = Calendar.getInstance();
+        return db.deleteOldEntries((calendar.getTimeInMillis()-deleteDelay)/1000);
     }
 
     public List<ScreenEntry> getData(Context context) {

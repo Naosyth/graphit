@@ -147,4 +147,11 @@ public class NetworkDBHelper extends MetricDBHelper {
         db.close();
         return numDeleted;
     }
+
+    public int deleteOldEntries(long time) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int numCollapsed = db.delete(TABLE_NETWORK, KEY_TIME + " <= ?", new String[] { String.valueOf(time) });
+        db.close();
+        return numCollapsed;
+    }
 }

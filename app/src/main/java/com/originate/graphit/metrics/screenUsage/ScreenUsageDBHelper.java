@@ -17,10 +17,6 @@ public class ScreenUsageDBHelper extends MetricDBHelper {
 
     public ScreenUsageDBHelper(Context context) {
         super(context);
-
-        String query = "CREATE TABLE IF NOT EXISTS screen_usage (_id INTEGER PRIMARY KEY, state INTEGER)";
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL(query);
     }
 
     @Override
@@ -143,7 +139,7 @@ public class ScreenUsageDBHelper extends MetricDBHelper {
         return numDeleted;
     }
 
-    public int collapseOldEntries(long time) {
+    public int deleteOldEntries(long time) {
         SQLiteDatabase db = this.getWritableDatabase();
         int numCollapsed = db.delete(TABLE_SCREEN, KEY_TIME + " <= ?", new String[] { String.valueOf(time) });
         db.close();

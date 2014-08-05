@@ -9,12 +9,54 @@
 
         <ListPreference
             android:key="@string/pref_battery_collapseDelay"
-            android:title="@string/pref_battery_collapseTitle"
-            android:summary="@string/pref_battery_collapseSummary"
-            android:dialogTitle="@string/pref_battery_collapseDialogTitle"
+            android:title="@string/pref_metric_collapseTitle"
+            android:summary="@string/pref_metric_collapseSummary"
+            android:dialogTitle="@string/pref_metric_collapseDialogTitle"
             android:entries="@array/pref_metricCollapseFrequency"
             android:entryValues="@array/pref_metricCollapseFrequencyValues"
             android:defaultValue="7776000000"/>
+        <ListPreference
+            android:key="@string/pref_battery_deleteDelay"
+            android:title="@string/pref_metric_deleteTitle"
+            android:summary="@string/pref_metric_deleteSummary"
+            android:dialogTitle="@string/pref_metric_deleteDialogTitle"
+            android:entries="@array/pref_metricDeleteFrequency"
+            android:entryValues="@array/pref_metricDeleteFrequencyValues"
+            android:defaultValue="-1"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_screen_settingsTitle">
+
+        <ListPreference
+            android:key="@string/pref_screen_deleteDelay"
+            android:title="@string/pref_metric_deleteTitle"
+            android:summary="@string/pref_metric_deleteSummary"
+            android:dialogTitle="@string/pref_metric_deleteDialogTitle"
+            android:entries="@array/pref_metricDeleteFrequency"
+            android:entryValues="@array/pref_metricDeleteFrequencyValues"
+            android:defaultValue="-1"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_network_settingsTitle">
+
+        <ListPreference
+            android:key="@string/pref_network_collapseDelay"
+            android:title="@string/pref_metric_collapseTitle"
+            android:summary="@string/pref_metric_collapseSummary"
+            android:dialogTitle="@string/pref_metric_collapseDialogTitle"
+            android:entries="@array/pref_metricCollapseFrequency"
+            android:entryValues="@array/pref_metricCollapseFrequencyValues"
+            android:defaultValue="7776000000"/>
+        <ListPreference
+            android:key="@string/pref_network_deleteDelay"
+            android:title="@string/pref_metric_deleteTitle"
+            android:summary="@string/pref_metric_deleteSummary"
+            android:dialogTitle="@string/pref_metric_deleteDialogTitle"
+            android:entries="@array/pref_metricDeleteFrequency"
+            android:entryValues="@array/pref_metricDeleteFrequencyValues"
+            android:defaultValue="-1"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

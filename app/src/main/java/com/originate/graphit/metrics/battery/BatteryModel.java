@@ -8,6 +8,7 @@ import android.os.BatteryManager;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.originate.graphit.R;
 import com.originate.graphit.metrics.MetricModel;
@@ -17,10 +18,12 @@ import java.util.List;
 
 public class BatteryModel extends MetricModel {
     public static String collapseDelayKey;
+    public static String deleteDelayKey;
 
     public BatteryModel(Context context) {
         super(context.getString(R.string.pref_battery_listName), context.getString(R.string.pref_battery_enabled));
         collapseDelayKey = context.getString(R.string.pref_battery_collapseDelay);
+        deleteDelayKey = context.getString(R.string.pref_battery_deleteDelay);
     }
 
     public BatteryModel(Parcel in) {
@@ -29,6 +32,12 @@ public class BatteryModel extends MetricModel {
 
     @Override
     public void clickHandler(Context context) {
+        BatteryDBHelper db = new BatteryDBHelper(context);
+        if (db.getEntryCount() < 2) {
+            Toast.makeText(context, R.string.error_not_enough_data_entries, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         Intent graphIntent = new Intent(context, BatteryGraphActivity.class);
         graphIntent.putExtra("model", this);
         context.startActivity(graphIntent);
@@ -41,18 +50,23 @@ public class BatteryModel extends MetricModel {
             return;
 
         collapseData(context);
+        deleteData(context);
 
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(null, ifilter);
         if (batteryStatus == null)
             return;
 
+        BatteryDBHelper db = new BatteryDBHelper(context);
+
+        if (db.getLastEntry().getPercentage() == 100) // Add an extra critical entry to show the transition from full to not full
+            db.addEntry(new BatteryEntry(Calendar.getInstance().getTimeInMillis()/1000-60, 100, true));
+
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         int batteryPct = (int)(100*(level/(float)scale));
         Calendar calendar = Calendar.getInstance();
-        BatteryDBHelper db = new BatteryDBHelper(context);
-        BatteryEntry entry = new BatteryEntry(calendar.getTimeInMillis()/1000, batteryPct, false);
+        BatteryEntry entry = new BatteryEntry(calendar.getTimeInMillis()/1000, batteryPct, batteryPct==100); // critical if just reached full charge
         if (db.getLastEntry() != null && db.getLastEntry().getPercentage() == entry.getPercentage())
             return;
 
@@ -66,9 +80,8 @@ public class BatteryModel extends MetricModel {
         if (entries.size() == 1) {
             criticalEntry = entries.get(0);
         } else if (entries.size() >= 3
-                && (Float.compare(entries.get(2).getPercentage(), entries.get(1).getPercentage()) == 0 // Case 1: Unplugged from fully charged state
-                || entries.get(1).getPercentage() < entries.get(0).getPercentage() && entries.get(1).getPercentage() < entries.get(2).getPercentage() // Case 2: Unplugged from charging state
-                || entries.get(1).getPercentage() > entries.get(0).getPercentage() && entries.get(1).getPercentage() > entries.get(2).getPercentage())) { // Case 3: Plugged in from discharging state
+                && ((entries.get(1).getPercentage() < entries.get(0).getPercentage() && entries.get(1).getPercentage() < entries.get(2).getPercentage()) // Unplugged from charging state
+                || (entries.get(1).getPercentage() > entries.get(0).getPercentage() && entries.get(1).getPercentage() > entries.get(2).getPercentage()))) { // Plugged in from discharging state
             criticalEntry = entries.get(1);
         }
 
@@ -83,7 +96,7 @@ public class BatteryModel extends MetricModel {
 
     @Override
     public int collapseData(Context context) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences( context );
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         long collapseDelay = Long.parseLong(settings.getString(collapseDelayKey, "-1"));
 
         if (collapseDelay == -1)
@@ -92,6 +105,19 @@ public class BatteryModel extends MetricModel {
         BatteryDBHelper db = new BatteryDBHelper(context);
         Calendar calendar = Calendar.getInstance();
         return db.collapseOldEntries((calendar.getTimeInMillis()-collapseDelay)/1000);
+    }
+
+    @Override
+    public int deleteData(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        long deleteDelay = Long.parseLong(settings.getString(deleteDelayKey, "-1"));
+
+        if (deleteDelay == -1)
+            return 0;
+
+        BatteryDBHelper db = new BatteryDBHelper(context);
+        Calendar calendar = Calendar.getInstance();
+        return db.deleteOldEntries((calendar.getTimeInMillis() - deleteDelay) / 1000);
     }
 
     public List<BatteryEntry> getData(Context context) {

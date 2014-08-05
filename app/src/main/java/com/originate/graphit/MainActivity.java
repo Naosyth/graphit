@@ -79,12 +79,6 @@ public class MainActivity extends ActionBarActivity {
             startActivity(settingsIntent);
             return true;
         }
-        else if (id == R.id.action_startService) {
-            startBackgroundService();
-        }
-        else if (id == R.id.action_stopService) {
-            stopBackgroundService();
-        }
         return super.onOptionsItemSelected(item);
     }
 

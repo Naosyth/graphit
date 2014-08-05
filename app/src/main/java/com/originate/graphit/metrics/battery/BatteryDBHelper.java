@@ -155,4 +155,11 @@ public class BatteryDBHelper extends MetricDBHelper {
         db.close();
         return numCollapsed;
     }
+
+    public int deleteOldEntries(long time) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int numCollapsed = db.delete(TABLE_BATTERY, KEY_TIME + " <= ?", new String[] { String.valueOf(time) });
+        db.close();
+        return numCollapsed;
+    }
 }
