@@ -35,6 +35,8 @@ public abstract class MetricModel implements Parcelable {
 
     public abstract int collapseData(Context context);
 
+    public abstract int deleteData(Context context);
+
     @Override
     public int describeContents() {
         return 0;

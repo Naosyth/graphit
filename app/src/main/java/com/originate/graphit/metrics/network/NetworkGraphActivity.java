@@ -34,7 +34,6 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -67,7 +66,7 @@ public class NetworkGraphActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.network_graph, menu);
+        getMenuInflater().inflate(R.menu.graphs, menu);
         return true;
     }
 
@@ -76,7 +75,13 @@ public class NetworkGraphActivity extends ActionBarActivity {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             refreshData();
-            fragment.setupPlot();
+            fragment.loadData();
+        } else if (id == R.id.action_prevDay) {
+            fragment.viewPrevDay();
+        } else if (id == R.id.action_today) {
+            fragment.viewToday();
+        } else if (id == R.id.action_nextDay) {
+            fragment.viewNextDay();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -100,7 +105,12 @@ public class NetworkGraphActivity extends ActionBarActivity {
         for (int i = 1; i < entries.size(); i++) {
             NetworkEntry previous = entries.get(i-1);
             NetworkEntry current= entries.get(i);
+
+            if (entries.get(i-1).getTime() < current.getTime()-120)
+                newList.add(new NetworkEntry(current.getTime()-60, 0, 0));
             newList.add(new NetworkEntry(current.getTime(), (current.getDown()-previous.getDown())/1024, (current.getUp()-previous.getUp())/1024));
+            if ((i+1) >= entries.size() || entries.get(i+1).getTime() > current.getTime()+120)
+                newList.add(new NetworkEntry(current.getTime()+60, 0, 0));
         }
         return newList;
     }
@@ -110,9 +120,7 @@ public class NetworkGraphActivity extends ActionBarActivity {
         private PointF minXY;
         private PointF maxXY;
         private XYSeries series_down;
-        private XYSeries series_up;
-        private float domainLeftBoundary;
-        private float domainRightBoundary;
+        private int dayOffset;
 
         private static final int rangeMax = 100;
         private static final int rangeMin = 0;
@@ -131,7 +139,8 @@ public class NetworkGraphActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_network_graph, container, false);
             plot = (XYPlot) rootView.findViewById(R.id.networkPlot);
 
-            setupPlot();
+            loadData();
+            viewToday();
 
             // Remove certain components
             plot.getLayoutManager().remove(plot.getDomainLabelWidget());
@@ -154,20 +163,21 @@ public class NetworkGraphActivity extends ActionBarActivity {
             plot.setRangeStep(XYStepMode.SUBDIVIDE, 8);
             plot.getGraphWidget().setRangeGridLinePaint(new Paint(Color.BLACK));
             plot.getGraphWidget().setRangeOriginLinePaint(new Paint(Color.BLACK));
-            plot.getGraphWidget().setRangeLabelWidth(PixelUtils.dpToPix(25));
+            plot.getGraphWidget().setRangeLabelWidth(PixelUtils.dpToPix(55));
             plot.getGraphWidget().setRangeLabelVerticalOffset(PixelUtils.dpToPix(-6));
             plot.getGraphWidget().setRangeLabelHorizontalOffset(PixelUtils.dpToPix(5));
             plot.getGraphWidget().getRangeLabelPaint().setColor(Color.GRAY);
 
             // Domain Formatting
             PaintUtils.setFontSizeDp(plot.getGraphWidget().getDomainLabelPaint(), 9);
-            plot.getGraphWidget().setTicksPerDomainLabel(3);
+            plot.setDomainStep(XYStepMode.SUBDIVIDE, 4);
+            plot.getGraphWidget().setTicksPerDomainLabel(1);
             plot.getGraphWidget().setDomainLabelVerticalOffset(PixelUtils.dpToPix(10));
             plot.getGraphWidget().getDomainLabelPaint().setColor(Color.GRAY);
             plot.getGraphWidget().setDomainGridLinePaint(new Paint(Color.BLACK));
             plot.getGraphWidget().setDomainOriginLinePaint(new Paint(Color.BLACK));
 
-            plot.setRangeValueFormat(new DecimalFormat("0.00"));
+            plot.setRangeValueFormat(new DecimalFormat("0.00 MB"));
             plot.setDomainValueFormat(new Format() {
                 private SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yy k:mm");
 
@@ -239,9 +249,6 @@ public class NetworkGraphActivity extends ActionBarActivity {
                     float offset = domainSpan * scale / 2.0f;
                     minXY.x = domainMidPoint - offset;
                     maxXY.x = domainMidPoint + offset;
-                    minXY.x = Math.max(minXY.x, domainLeftBoundary);
-                    maxXY.x = Math.min(maxXY.x, domainRightBoundary);
-                    clampToDomainBounds(domainSpan);
                 }
 
                 private void scroll(float pan) {
@@ -253,17 +260,6 @@ public class NetworkGraphActivity extends ActionBarActivity {
                     float offset = pan * step;
                     minXY.x = minXY.x + offset;
                     maxXY.x = maxXY.x + offset;
-                    clampToDomainBounds(domainSpan);
-                }
-
-                private void clampToDomainBounds(float domainSpan) {
-                    if (minXY.x < domainLeftBoundary) {
-                        minXY.x = domainLeftBoundary;
-                        maxXY.x = domainLeftBoundary + domainSpan;
-                    } else if (maxXY.x > domainRightBoundary) {
-                        maxXY.x = domainRightBoundary;
-                        minXY.x = domainRightBoundary - domainSpan;
-                    }
                 }
 
                 private float spacing(MotionEvent event) {
@@ -276,36 +272,44 @@ public class NetworkGraphActivity extends ActionBarActivity {
             return rootView;
         }
 
-        public void setupPlot() {
+        public void loadData() {
             if (timeValues == null || downValues == null || upValues == null ||
                     timeValues.size() == 0 || downValues.size() == 0 || upValues.size() == 0)
                 return;
 
             plot.removeSeries(series_down);
-            plot.removeSeries(series_up);
             series_down = new SimpleXYSeries(timeValues, downValues, "Network Down");
-            series_up = new SimpleXYSeries(timeValues, upValues, "Network Up");
             plot.addSeries(series_down, new LineAndPointFormatter(Color.BLACK, Color.BLACK, null, null));
-            //plot.addSeries(series_up, new LineAndPointFormatter(Color.BLACK, Color.BLACK, null, null));
+            plot.redraw();
+        }
 
-            long minTimeValue = Collections.min(timeValues);
-            long maxTimeValue = Collections.max(timeValues);
-            long upperTimeBound = Calendar.getInstance().getTimeInMillis()/1000;
-            long lowerTimeBound = Math.max(upperTimeBound-86400, minTimeValue-3600);
+        public void viewPrevDay() {
+            dayOffset--;
+            viewSelectedDay();
+        }
 
-            if (timeValues.size() > 0) {
-                domainLeftBoundary = Math.min(minTimeValue, lowerTimeBound);
-                domainRightBoundary = Math.max(maxTimeValue, upperTimeBound);
-            } else {
-                domainLeftBoundary = lowerTimeBound;
-                domainRightBoundary = upperTimeBound;
-            }
+        public void viewNextDay() {
+            dayOffset++;
+            viewSelectedDay();
+        }
 
-            plot.setDomainBoundaries(lowerTimeBound, upperTimeBound, BoundaryMode.FIXED);
-            //plot.setRangeBoundaries(rangeMin, rangeMax, BoundaryMode.FIXED);
-            minXY = new PointF(lowerTimeBound, rangeMin);
-            maxXY = new PointF(upperTimeBound, rangeMax);
+        public void viewToday() {
+            dayOffset = 0;
+            viewSelectedDay();
+        }
 
+        private void viewSelectedDay() {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            long dayStart = calendar.getTimeInMillis()/1000 + dayOffset*86400;
+            long dayEnd = calendar.getTimeInMillis()/1000 + (dayOffset+1)*86400;
+            plot.setDomainBoundaries(dayStart, dayEnd, BoundaryMode.FIXED);
+            plot.setRangeBoundaries(null, null, BoundaryMode.AUTO);
+            minXY = new PointF(dayStart, rangeMin);
+            maxXY = new PointF(dayEnd, rangeMax);
             plot.redraw();
         }
     }

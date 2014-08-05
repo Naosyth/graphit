@@ -2,18 +2,25 @@
 <resources>
 
     <string-array name="pref_metricCollapseFrequency">
-        <item>DEBUG VALUE</item>
         <item>One Day</item>
+        <item>One Week</item>
+        <item>One Month</item>
+    </string-array>
+    <string-array name="pref_metricCollapseFrequencyValues">
+        <item>86400000</item>
+        <item>604800000</item>
+        <item>2592000000</item>
+    </string-array>
+
+    <string-array name="pref_metricDeleteFrequency">
         <item>One Week</item>
         <item>One Month</item>
         <item>Three Months</item>
         <item>Six Month</item>
         <item>One Year</item>
-        <item>Never</item>
+        <item>Keep Data Forever</item>
     </string-array>
-    <string-array name="pref_metricCollapseFrequencyValues">
-        <item>300000</item>
-        <item>86400000</item>
+    <string-array name="pref_metricDeleteFrequencyValues">
         <item>604800000</item>
         <item>2592000000</item>
         <item>7776000000</item>

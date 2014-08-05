@@ -16,9 +16,13 @@ import java.util.Calendar;
 import java.util.List;
 
 public class NetworkModel extends MetricModel {
+    public static String collapseDelayKey;
+    public static String deleteDelayKey;
 
     public NetworkModel(Context context) {
         super(context.getString(R.string.pref_network_listName), context.getString(R.string.pref_network_enabled));
+        collapseDelayKey = context.getString(R.string.pref_network_collapseDelay);
+        deleteDelayKey = context.getString(R.string.pref_network_deleteDelay);
     }
 
     public NetworkModel(Parcel in) {
@@ -27,6 +31,12 @@ public class NetworkModel extends MetricModel {
 
     @Override
     public void clickHandler(Context context) {
+        NetworkDBHelper db = new NetworkDBHelper(context);
+        if (db.getEntryCount() < 3) {
+            Toast.makeText(context, R.string.error_not_enough_data_entries, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         Intent graphIntent = new Intent(context, NetworkGraphActivity.class);
         graphIntent.putExtra("model", this);
         context.startActivity(graphIntent);
@@ -38,11 +48,17 @@ public class NetworkModel extends MetricModel {
         if (!settings.getBoolean(this.getEnableKey(), false))
             return;
 
+        collapseData(context);
+        deleteData(context);
+
         Calendar calendar = Calendar.getInstance();
         NetworkDBHelper db = new NetworkDBHelper(context);
 
         int down = (int)TrafficStats.getTotalRxBytes()/1024;
         int up = (int)TrafficStats.getTotalTxBytes()/1024;
+
+        if (down < 0)
+            return;
 
         NetworkEntry entry = new NetworkEntry(calendar.getTimeInMillis()/1000, down, up);
         if (db.getLastEntry() != null && db.getLastEntry().getUp() == entry.getUp() && db.getLastEntry().getDown() == entry.getDown())
@@ -53,7 +69,36 @@ public class NetworkModel extends MetricModel {
 
     @Override
     public int collapseData(Context context) {
-        return 0;
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        long collapseDelay = Long.parseLong(settings.getString(collapseDelayKey, "-1"));
+
+        NetworkDBHelper db = new NetworkDBHelper(context);
+        List<NetworkEntry> entries = db.getAllEntries();
+        int numDeleted = 0;
+        for (int i = 1; i < entries.size(); i++) {
+            NetworkEntry previous = entries.get(i-1);
+            NetworkEntry current = entries.get(i);
+
+            if (Math.abs(current.getDown() - previous.getDown())/1024 < 0.05
+                    && current.getTime() < (Calendar.getInstance().getTimeInMillis()-collapseDelay)/1000) {
+                db.deleteEntry(previous);
+                numDeleted++;
+            }
+        }
+        return numDeleted;
+    }
+
+    @Override
+    public int deleteData(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        long deleteDelay = Long.parseLong(settings.getString(deleteDelayKey, "-1"));
+
+        if (deleteDelay == -1)
+            return 0;
+
+        NetworkDBHelper db = new NetworkDBHelper(context);
+        Calendar calendar = Calendar.getInstance();
+        return db.deleteOldEntries((calendar.getTimeInMillis()-deleteDelay)/1000);
     }
 
     public List<NetworkEntry> getData(Context context) {

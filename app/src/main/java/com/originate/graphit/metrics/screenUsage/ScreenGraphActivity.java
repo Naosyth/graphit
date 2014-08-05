@@ -67,7 +67,7 @@ public class ScreenGraphActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.battery_graph, menu);
+        getMenuInflater().inflate(R.menu.graphs, menu);
         return true;
     }
 
@@ -76,7 +76,13 @@ public class ScreenGraphActivity extends ActionBarActivity {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             refreshData();
-            fragment.setupPlot();
+            fragment.loadData();
+        } else if (id == R.id.action_prevDay) {
+            fragment.viewPrevDay();
+        } else if (id == R.id.action_today) {
+            fragment.viewToday();
+        } else if (id == R.id.action_nextDay) {
+            fragment.viewNextDay();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -110,8 +116,7 @@ public class ScreenGraphActivity extends ActionBarActivity {
         private PointF minXY;
         private PointF maxXY;
         private XYSeries series;
-        private float domainLeftBoundary;
-        private float domainRightBoundary;
+        private int dayOffset = 0;
 
         private static final int rangeMax = 2;
         private static final int rangeMin = -1;
@@ -130,7 +135,8 @@ public class ScreenGraphActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_screen_graph, container, false);
             plot = (XYPlot) rootView.findViewById(R.id.screenPlot);
 
-            setupPlot();
+            loadData();
+            viewToday();
 
             // Remove certain components
             plot.getLayoutManager().remove(plot.getDomainLabelWidget());
@@ -170,7 +176,6 @@ public class ScreenGraphActivity extends ActionBarActivity {
             LineAndPointFormatter formatter = new LineAndPointFormatter(Color.BLACK, Color.BLACK, null, null);
             //formatter.getLinePaint().setStrokeWidth(PixelUtils.dpToPix(5));
             formatter.getVertexPaint().setStrokeWidth(0);
-            plot.addSeries(series, formatter);
 
             plot.setRangeValueFormat(new Format() {
                 @Override
@@ -254,9 +259,6 @@ public class ScreenGraphActivity extends ActionBarActivity {
                     float offset = domainSpan * scale / 2.0f;
                     minXY.x = domainMidPoint - offset;
                     maxXY.x = domainMidPoint + offset;
-                    minXY.x = Math.max(minXY.x, domainLeftBoundary);
-                    maxXY.x = Math.min(maxXY.x, domainRightBoundary);
-                    clampToDomainBounds(domainSpan);
                 }
 
                 private void scroll(float pan) {
@@ -268,17 +270,6 @@ public class ScreenGraphActivity extends ActionBarActivity {
                     float offset = pan * step;
                     minXY.x = minXY.x + offset;
                     maxXY.x = maxXY.x + offset;
-                    clampToDomainBounds(domainSpan);
-                }
-
-                private void clampToDomainBounds(float domainSpan) {
-                    if (minXY.x < domainLeftBoundary) {
-                        minXY.x = domainLeftBoundary;
-                        maxXY.x = domainLeftBoundary + domainSpan;
-                    } else if (maxXY.x > domainRightBoundary) {
-                        maxXY.x = domainRightBoundary;
-                        minXY.x = domainRightBoundary - domainSpan;
-                    }
                 }
 
                 private float spacing(MotionEvent event) {
@@ -291,7 +282,7 @@ public class ScreenGraphActivity extends ActionBarActivity {
             return rootView;
         }
 
-        public void setupPlot() {
+        public void loadData() {
             if (timeValues == null || screenValues == null ||
                     timeValues.size() == 0 || screenValues.size() == 0)
                 return;
@@ -299,25 +290,36 @@ public class ScreenGraphActivity extends ActionBarActivity {
             plot.removeSeries(series);
             series = new SimpleXYSeries(timeValues, screenValues, "Screen Usage");
             plot.addSeries(series, new LineAndPointFormatter(Color.BLACK, Color.BLACK, null, null));
+            plot.redraw();
+        }
 
-            long minTimeValue = Collections.min(timeValues);
-            long maxTimeValue = Collections.max(timeValues);
-            long upperTimeBound = Calendar.getInstance().getTimeInMillis()/1000;
-            long lowerTimeBound = Math.max(upperTimeBound-86400, minTimeValue-3600);
+        public void viewPrevDay() {
+            dayOffset--;
+            viewSelectedDay();
+        }
 
-            if (timeValues.size() > 0) {
-                domainLeftBoundary = Math.min(minTimeValue, lowerTimeBound);
-                domainRightBoundary = Math.max(maxTimeValue, upperTimeBound);
-            } else {
-                domainLeftBoundary = lowerTimeBound;
-                domainRightBoundary = upperTimeBound;
-            }
+        public void viewNextDay() {
+            dayOffset++;
+            viewSelectedDay();
+        }
 
-            plot.setDomainBoundaries(lowerTimeBound, upperTimeBound, BoundaryMode.FIXED);
+        public void viewToday() {
+            dayOffset = 0;
+            viewSelectedDay();
+        }
+
+        private void viewSelectedDay() {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            long dayStart = calendar.getTimeInMillis()/1000 + dayOffset*86400;
+            long dayEnd = calendar.getTimeInMillis()/1000 + (dayOffset+1)*86400;
+            plot.setDomainBoundaries(dayStart, dayEnd, BoundaryMode.FIXED);
             plot.setRangeBoundaries(rangeMin, rangeMax, BoundaryMode.FIXED);
-            minXY = new PointF(lowerTimeBound, rangeMin);
-            maxXY = new PointF(upperTimeBound, rangeMax);
-
+            minXY = new PointF(dayStart, rangeMin);
+            maxXY = new PointF(dayEnd, rangeMax);
             plot.redraw();
         }
     }

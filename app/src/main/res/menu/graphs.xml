@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.originate.graphit.metrics.battery.BatteryGraphActivity" >
+    <item android:id="@+id/action_prevDay"
+        android:title="@string/action_prevDay"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+    <item android:id="@+id/action_today"
+        android:title="@string/action_today"
+        android:orderInCategory="200"
+        app:showAsAction="always" />
+    <item android:id="@+id/action_nextDay"
+        android:title="@string/action_nextDay"
+        android:orderInCategory="300"
+        app:showAsAction="always" />
+    <item android:id="@+id/action_refresh"
+        android:title="@string/action_refresh"
+        android:orderInCategory="400"
+        app:showAsAction="always" />
+</menu>

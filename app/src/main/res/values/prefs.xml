@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="pref_battery_deleteDelay">battery_deleteDelay</string>
     <string name="pref_battery_collapseDelay">battery_collapseDelay</string>
     <string name="pref_battery_enabled">battery_enabled</string>
 
+    <string name="pref_screen_deleteDelay">screen_deleteDelay</string>
     <string name="pref_screen_collapseDelay">screen_collapseDelay</string>
     <string name="pref_screen_enabled">screen_enabled</string>
 
+    <string name="pref_network_deleteDelay">network_deleteDelay</string>
+    <string name="pref_network_collapseDelay">network_collapseDelay</string>
     <string name="pref_network_enabled">network_enabled</string>
 </resources>
