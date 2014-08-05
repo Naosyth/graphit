@@ -59,7 +59,7 @@ public class BatteryModel extends MetricModel {
 
         BatteryDBHelper db = new BatteryDBHelper(context);
 
-        if (db.getLastEntry().getPercentage() == 100) // Add an extra critical entry to show the transition from full to not full
+        if (db.getLastEntry() != null && db.getLastEntry().getPercentage() == 100) // Add an extra critical entry to show the transition from full to not full
             db.addEntry(new BatteryEntry(Calendar.getInstance().getTimeInMillis()/1000-60, 100, true));
 
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
