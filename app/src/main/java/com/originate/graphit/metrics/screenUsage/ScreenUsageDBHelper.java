@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScreenUsageDBHelper extends MetricDBHelper {
-    private static final String TABLE_SCREEN = "screen_usage";
-    private static final String KEY_STATE = "state";
-    private static final String KEY_TIME = "_id";
+    public static final String TABLE_SCREEN = "screen_usage";
+    public static final String KEY_STATE = "state";
+    public static final String KEY_TIME = "_id";
 
     public ScreenUsageDBHelper(Context context) {
-        super(context);
+        super(context, ScreenEntry.class);
     }
 
     @Override
@@ -31,42 +31,6 @@ public class ScreenUsageDBHelper extends MetricDBHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SCREEN);
         onCreate(db);
-    }
-
-    public void addEntry(ScreenEntry entry) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_TIME, entry.getTime());
-        values.put(KEY_STATE, entry.getOn() ? 1 : 0);
-        db.insert(TABLE_SCREEN, null, values);
-        db.close();
-    }
-
-    public ScreenEntry getEntry(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_SCREEN, new String[] { KEY_TIME, KEY_STATE }, KEY_TIME + "=?", new String[] { String.valueOf(id) }, null, null, null, null);
-        if (!cursor.moveToFirst())
-            return null;
-
-        ScreenEntry entry = new ScreenEntry();
-        entry.setTime((long)cursor.getInt(0));
-        entry.setOn(cursor.getInt(1) > 0);
-        db.close();
-        return entry;
-    }
-
-    public ScreenEntry getLastEntry() {
-        String selectQuery = "SELECT * FROM " + TABLE_SCREEN + " WHERE " + KEY_TIME + " = (SELECT MAX(" + KEY_TIME + ") FROM " + TABLE_SCREEN + ")";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        if (!cursor.moveToFirst())
-            return null;
-
-        ScreenEntry entry = new ScreenEntry();
-        entry.setTime((long)cursor.getInt(0));
-        entry.setOn(cursor.getInt(1) > 0);
-        db.close();
-        return entry;
     }
 
     public List<ScreenEntry> getLastEntries(int numEntries) {

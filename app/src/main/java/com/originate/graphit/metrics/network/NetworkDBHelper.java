@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NetworkDBHelper extends MetricDBHelper {
-    private static final String TABLE_NETWORK = "network";
-    private static final String KEY_TIME = "_id";
-    private static final String KEY_DOWN = "down";
-    private static final String KEY_UP = "up";
+    public static final String TABLE_NETWORK = "network";
+    public static final String KEY_TIME = "_id";
+    public static final String KEY_DOWN = "down";
+    public static final String KEY_UP = "up";
 
     public NetworkDBHelper(Context context) {
-        super(context);
+        super(context, NetworkEntry.class);
     }
 
     @Override
@@ -33,46 +33,6 @@ public class NetworkDBHelper extends MetricDBHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NETWORK);
         onCreate(db);
-    }
-
-    public void addEntry(NetworkEntry entry) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_TIME, entry.getTime());
-        values.put(KEY_DOWN, entry.getDown());
-        values.put(KEY_UP, entry.getUp());
-
-        db.insert(TABLE_NETWORK, null, values);
-        db.close();
-    }
-
-    public NetworkEntry getEntry(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NETWORK, new String[] { KEY_TIME, KEY_DOWN, KEY_UP }, KEY_TIME + "=?", new String[] { String.valueOf(id) }, null, null, null, null);
-        if (!cursor.moveToFirst())
-            return null;
-
-        NetworkEntry entry = new NetworkEntry();
-        entry.setTime((long)cursor.getInt(0));
-        entry.setDown(cursor.getInt(1));
-        entry.setUp(cursor.getInt(2));
-        db.close();
-        return entry;
-    }
-
-    public NetworkEntry getLastEntry() {
-        String selectQuery = "SELECT * FROM " + TABLE_NETWORK + " WHERE " + KEY_TIME + " = (SELECT MAX(" + KEY_TIME + ") FROM " + TABLE_NETWORK + ")";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        if (!cursor.moveToFirst())
-            return null;
-
-        NetworkEntry entry = new NetworkEntry();
-        entry.setTime((long)cursor.getInt(0));
-        entry.setDown(cursor.getInt(1));
-        entry.setUp(cursor.getInt(2));
-        db.close();
-        return entry;
     }
 
     public List<NetworkEntry> getLastEntries(int numEntries) {

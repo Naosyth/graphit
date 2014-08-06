@@ -1,6 +1,11 @@
 package com.originate.graphit.metrics.battery;
 
-public class BatteryEntry {
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.originate.graphit.metrics.MetricsEntry;
+
+public class BatteryEntry extends MetricsEntry{
     private long time;
     private int percentage;
     private boolean critical;
@@ -12,6 +17,11 @@ public class BatteryEntry {
         this.percentage = pct;
         this.time = time;
         this.critical = critical;
+    }
+
+    @Override
+    public String getIDKey() {
+        return BatteryDBHelper.KEY_TIME;
     }
 
     public void setTime(long time) {
@@ -36,5 +46,26 @@ public class BatteryEntry {
 
     public boolean getCritical() {
         return this.critical;
+    }
+
+    @Override
+    public ContentValues getValues() {
+        ContentValues values = new ContentValues();
+        values.put(BatteryDBHelper.KEY_TIME, time);
+        values.put(BatteryDBHelper.KEY_PERCENT, percentage);
+        values.put(BatteryDBHelper.KEY_CRITICAL, critical ? 1 : 0);
+        return values;
+    }
+
+    @Override
+    public void setValues(Cursor cursor) {
+        time = (long)cursor.getInt(0);
+        percentage = cursor.getInt(1);
+        critical = cursor.getInt(2) > 0;
+    }
+
+    @Override
+    public String getTable() {
+        return BatteryDBHelper.TABLE_BATTERY;
     }
 }

@@ -1,6 +1,11 @@
 package com.originate.graphit.metrics.screenUsage;
 
-public class ScreenEntry {
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.originate.graphit.metrics.MetricsEntry;
+
+public class ScreenEntry extends MetricsEntry {
     private long time;
     private boolean on;
 
@@ -26,5 +31,29 @@ public class ScreenEntry {
 
     public boolean getOn() {
         return this.on;
+    }
+
+    @Override
+    public ContentValues getValues() {
+        ContentValues values = new ContentValues();
+        values.put(ScreenUsageDBHelper.KEY_TIME, time);
+        values.put(ScreenUsageDBHelper.KEY_STATE, on);
+        return values;
+    }
+
+    @Override
+    public void setValues(Cursor cursor) {
+        time = (long)cursor.getInt(0);
+        on = cursor.getInt(1) > 0;
+    }
+
+    @Override
+    public String getTable() {
+        return ScreenUsageDBHelper.TABLE_SCREEN;
+    }
+
+    @Override
+    public String getIDKey() {
+        return ScreenUsageDBHelper.KEY_TIME;
     }
 }
