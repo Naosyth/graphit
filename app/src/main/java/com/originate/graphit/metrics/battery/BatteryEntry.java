@@ -24,6 +24,22 @@ public class BatteryEntry extends MetricsEntry{
         return this.time;
     }
 
+    @Override
+    public ContentValues getValues() {
+        ContentValues values = new ContentValues();
+        values.put(BatteryDBHelper.KEY_TIME, time);
+        values.put(BatteryDBHelper.KEY_PERCENT, percentage);
+        values.put(BatteryDBHelper.KEY_CRITICAL, critical ? 1 : 0);
+        return values;
+    }
+
+    @Override
+    public void setValues(Cursor cursor) {
+        time = (long)cursor.getInt(0);
+        percentage = cursor.getInt(1);
+        critical = cursor.getInt(2) > 0;
+    }
+
     public void setTime(long time) {
         this.time = time;
     }
@@ -46,21 +62,5 @@ public class BatteryEntry extends MetricsEntry{
 
     public boolean getCritical() {
         return this.critical;
-    }
-
-    @Override
-    public ContentValues getValues() {
-        ContentValues values = new ContentValues();
-        values.put(BatteryDBHelper.KEY_TIME, time);
-        values.put(BatteryDBHelper.KEY_PERCENT, percentage);
-        values.put(BatteryDBHelper.KEY_CRITICAL, critical ? 1 : 0);
-        return values;
-    }
-
-    @Override
-    public void setValues(Cursor cursor) {
-        time = (long)cursor.getInt(0);
-        percentage = cursor.getInt(1);
-        critical = cursor.getInt(2) > 0;
     }
 }

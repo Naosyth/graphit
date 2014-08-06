@@ -22,6 +22,20 @@ public class ScreenEntry extends MetricsEntry {
         return this.time;
     }
 
+    @Override
+    public ContentValues getValues() {
+        ContentValues values = new ContentValues();
+        values.put(ScreenUsageDBHelper.KEY_TIME, time);
+        values.put(ScreenUsageDBHelper.KEY_STATE, on);
+        return values;
+    }
+
+    @Override
+    public void setValues(Cursor cursor) {
+        time = (long)cursor.getInt(0);
+        on = cursor.getInt(1) > 0;
+    }
+
     public void setTime(long time) {
         this.time = time;
     }
@@ -36,19 +50,5 @@ public class ScreenEntry extends MetricsEntry {
 
     public boolean getOn() {
         return this.on;
-    }
-
-    @Override
-    public ContentValues getValues() {
-        ContentValues values = new ContentValues();
-        values.put(ScreenUsageDBHelper.KEY_TIME, time);
-        values.put(ScreenUsageDBHelper.KEY_STATE, on);
-        return values;
-    }
-
-    @Override
-    public void setValues(Cursor cursor) {
-        time = (long)cursor.getInt(0);
-        on = cursor.getInt(1) > 0;
     }
 }

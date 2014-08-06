@@ -24,6 +24,22 @@ public class NetworkEntry extends MetricsEntry {
         return this.time;
     }
 
+    @Override
+    public ContentValues getValues() {
+        ContentValues values = new ContentValues();
+        values.put(NetworkDBHelper.KEY_TIME, time);
+        values.put(NetworkDBHelper.KEY_DOWN, down);
+        values.put(NetworkDBHelper.KEY_UP, up);
+        return values;
+    }
+
+    @Override
+    public void setValues(Cursor cursor) {
+        time = (long)cursor.getInt(0);
+        down = cursor.getInt(1);
+        up = cursor.getInt(2);
+    }
+
     public void setTime(long time) {
         this.time = time;
     }
@@ -46,21 +62,5 @@ public class NetworkEntry extends MetricsEntry {
 
     public float getUp() {
         return this.up;
-    }
-
-    @Override
-    public ContentValues getValues() {
-        ContentValues values = new ContentValues();
-        values.put(NetworkDBHelper.KEY_TIME, time);
-        values.put(NetworkDBHelper.KEY_DOWN, down);
-        values.put(NetworkDBHelper.KEY_UP, up);
-        return values;
-    }
-
-    @Override
-    public void setValues(Cursor cursor) {
-        time = (long)cursor.getInt(0);
-        down = cursor.getInt(1);
-        up = cursor.getInt(2);
     }
 }
