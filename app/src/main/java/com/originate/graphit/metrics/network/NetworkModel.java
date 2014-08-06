@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import com.originate.graphit.Constants;
 import com.originate.graphit.R;
 import com.originate.graphit.metrics.MetricModel;
 
@@ -80,7 +81,7 @@ public class NetworkModel extends MetricModel {
             NetworkEntry previous = entries.get(i-1);
             NetworkEntry current = entries.get(i);
 
-            if (Math.abs(current.getDown() - previous.getDown())/1024 < 0.05
+            if (Math.abs(current.getDown() - previous.getDown()) < Constants.NETWORK_SIGNIFICANCE_DELTA
                     && current.getTime() < (Calendar.getInstance().getTimeInMillis()-collapseDelay)/1000) {
                 db.deleteEntry(previous);
                 numDeleted++;
