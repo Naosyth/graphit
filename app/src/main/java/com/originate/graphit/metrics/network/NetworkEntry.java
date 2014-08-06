@@ -1,6 +1,11 @@
 package com.originate.graphit.metrics.network;
 
-public class NetworkEntry {
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.originate.graphit.metrics.MetricsEntry;
+
+public class NetworkEntry extends MetricsEntry {
     private long time;
     private float down;
     private float up;
@@ -12,6 +17,27 @@ public class NetworkEntry {
         this.time = time;
         this.down = up;
         this.up = down;
+    }
+
+    @Override
+    public long getID() {
+        return this.time;
+    }
+
+    @Override
+    public ContentValues getValues() {
+        ContentValues values = new ContentValues();
+        values.put(NetworkDBHelper.KEY_TIME, time);
+        values.put(NetworkDBHelper.KEY_DOWN, down);
+        values.put(NetworkDBHelper.KEY_UP, up);
+        return values;
+    }
+
+    @Override
+    public void setValues(Cursor cursor) {
+        time = (long)cursor.getInt(0);
+        down = cursor.getInt(1);
+        up = cursor.getInt(2);
     }
 
     public void setTime(long time) {
