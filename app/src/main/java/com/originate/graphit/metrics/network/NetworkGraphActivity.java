@@ -21,8 +21,6 @@ import com.androidplot.ui.XLayoutStyle;
 import com.androidplot.ui.YLayoutStyle;
 import com.androidplot.util.PaintUtils;
 import com.androidplot.util.PixelUtils;
-import com.androidplot.xy.SimpleXYSeries;
-import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.*;
 
 import com.originate.graphit.R;
