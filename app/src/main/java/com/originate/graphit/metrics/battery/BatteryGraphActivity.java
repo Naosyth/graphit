@@ -165,7 +165,7 @@ public class BatteryGraphActivity extends ActionBarActivity {
 
             plot.setRangeValueFormat(new DecimalFormat("0'%'"));
             plot.setDomainValueFormat(new Format() {
-                private SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yy k:mm");
+                private final SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yy k:mm");
 
                 @Override
                 public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
