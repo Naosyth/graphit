@@ -60,7 +60,9 @@ public class ScreenUsageModel extends MetricModel {
             screenOn = display.getState() == Display.STATE_ON;
         } else {
             PowerManager pwmngr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            screenOn = pwmngr.isScreenOn();
+          // Deprecated, but we're making sure we only use it in SDKs that support it so whatever, yo
+          //noinspection deprecation
+          screenOn = pwmngr.isScreenOn();
         }
         Calendar calendar = Calendar.getInstance();
         ScreenUsageDBHelper db = new ScreenUsageDBHelper(context);
