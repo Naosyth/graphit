@@ -6,8 +6,8 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 
 public abstract class MetricModel implements Parcelable {
-    private String displayName;
-    private String enableKey;
+    private final String displayName;
+    private final String enableKey;
 
     public MetricModel(String name, String key) {
         this.displayName = name;

@@ -16,8 +16,7 @@ public class DataCollectionService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         ArrayList<MetricModel> metricsList;
         metricsList = intent.getParcelableArrayListExtra("metricsList");
-        for (int i = 0; i < metricsList.size(); i++) {
-            MetricModel test = metricsList.get(i);
+        for (MetricModel test : metricsList) {
             test.recordData(this);
         }
 

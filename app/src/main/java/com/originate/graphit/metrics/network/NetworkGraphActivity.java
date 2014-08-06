@@ -21,8 +21,6 @@ import com.androidplot.ui.XLayoutStyle;
 import com.androidplot.ui.YLayoutStyle;
 import com.androidplot.util.PaintUtils;
 import com.androidplot.util.PixelUtils;
-import com.androidplot.xy.SimpleXYSeries;
-import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.*;
 
 import com.originate.graphit.R;
@@ -179,7 +177,7 @@ public class NetworkGraphActivity extends ActionBarActivity {
 
             plot.setRangeValueFormat(new DecimalFormat("0.00 MB"));
             plot.setDomainValueFormat(new Format() {
-                private SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yy k:mm");
+                private final SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yy k:mm");
 
                 @Override
                 public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {

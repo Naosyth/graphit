@@ -35,7 +35,6 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -189,7 +188,7 @@ public class ScreenGraphActivity extends ActionBarActivity {
                 }
             });
             plot.setDomainValueFormat(new Format() {
-                private SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yy k:mm");
+                private final SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yy k:mm");
 
                 @Override
                 public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
