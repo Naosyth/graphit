@@ -66,7 +66,7 @@ public class ScreenUsageModel extends MetricModel {
         }
         Calendar calendar = Calendar.getInstance();
         ScreenUsageDBHelper db = new ScreenUsageDBHelper(context);
-        ScreenEntry lastEntry = (ScreenEntry) db.getLastEntry();
+        ScreenEntry lastEntry = db.getLastEntry();
         ScreenEntry entry = new ScreenEntry(calendar.getTimeInMillis()/1000, screenOn);
         if (db.getLastEntry() != null && lastEntry.getOn() == entry.getOn())
             return;

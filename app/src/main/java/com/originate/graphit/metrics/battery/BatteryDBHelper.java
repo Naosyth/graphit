@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.originate.graphit.metrics.MetricDBHelper;
 
-public class BatteryDBHelper extends MetricDBHelper {
+public class BatteryDBHelper extends MetricDBHelper<BatteryEntry> {
     public static final String TABLE_BATTERY = "battery";
     public static final String KEY_PERCENT = "percent";
     public static final String KEY_TIME = "_id";

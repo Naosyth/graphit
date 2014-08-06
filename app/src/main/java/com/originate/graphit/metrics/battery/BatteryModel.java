@@ -59,7 +59,7 @@ public class BatteryModel extends MetricModel {
             return;
 
         BatteryDBHelper db = new BatteryDBHelper(context);
-        BatteryEntry lastEntry = (BatteryEntry)db.getLastEntry();
+        BatteryEntry lastEntry = db.getLastEntry();
 
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);

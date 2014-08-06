@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.originate.graphit.metrics.MetricDBHelper;
 
-public class NetworkDBHelper extends MetricDBHelper {
+public class NetworkDBHelper extends MetricDBHelper<NetworkEntry> {
     public static final String TABLE_NETWORK = "network";
     public static final String KEY_TIME = "_id";
     public static final String KEY_DOWN = "down";
