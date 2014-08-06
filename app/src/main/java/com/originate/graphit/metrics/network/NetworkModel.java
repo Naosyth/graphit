@@ -61,7 +61,7 @@ public class NetworkModel extends MetricModel {
             return;
 
         NetworkEntry entry = new NetworkEntry(calendar.getTimeInMillis()/1000, down, up);
-        NetworkEntry previousEntry = (NetworkEntry) db.getLastEntry();
+        NetworkEntry previousEntry = db.getLastEntry();
         if (db.getLastEntry() != null && previousEntry.getUp() == entry.getUp() && previousEntry.getDown() == entry.getDown())
             return;
 
