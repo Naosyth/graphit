@@ -19,6 +19,11 @@ public class NetworkEntry extends MetricsEntry {
         this.up = down;
     }
 
+    @Override
+    public long getID() {
+        return this.time;
+    }
+
     public void setTime(long time) {
         this.time = time;
     }
@@ -57,15 +62,5 @@ public class NetworkEntry extends MetricsEntry {
         time = (long)cursor.getInt(0);
         down = cursor.getInt(1);
         up = cursor.getInt(2);
-    }
-
-    @Override
-    public String getTable() {
-        return NetworkDBHelper.TABLE_NETWORK;
-    }
-
-    @Override
-    public String getIDKey() {
-        return NetworkDBHelper.KEY_TIME;
     }
 }

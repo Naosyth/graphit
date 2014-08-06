@@ -20,8 +20,8 @@ public class BatteryEntry extends MetricsEntry{
     }
 
     @Override
-    public String getIDKey() {
-        return BatteryDBHelper.KEY_TIME;
+    public long getID() {
+        return this.time;
     }
 
     public void setTime(long time) {
@@ -62,10 +62,5 @@ public class BatteryEntry extends MetricsEntry{
         time = (long)cursor.getInt(0);
         percentage = cursor.getInt(1);
         critical = cursor.getInt(2) > 0;
-    }
-
-    @Override
-    public String getTable() {
-        return BatteryDBHelper.TABLE_BATTERY;
     }
 }

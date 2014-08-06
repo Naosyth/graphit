@@ -17,6 +17,11 @@ public class ScreenEntry extends MetricsEntry {
         this.time = time;
     }
 
+    @Override
+    public long getID() {
+        return this.time;
+    }
+
     public void setTime(long time) {
         this.time = time;
     }
@@ -45,15 +50,5 @@ public class ScreenEntry extends MetricsEntry {
     public void setValues(Cursor cursor) {
         time = (long)cursor.getInt(0);
         on = cursor.getInt(1) > 0;
-    }
-
-    @Override
-    public String getTable() {
-        return ScreenUsageDBHelper.TABLE_SCREEN;
-    }
-
-    @Override
-    public String getIDKey() {
-        return ScreenUsageDBHelper.KEY_TIME;
     }
 }
