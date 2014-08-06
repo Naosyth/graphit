@@ -17,11 +17,12 @@ public class DataCollectionService extends Service {
         ArrayList<MetricModel> metricsList;
         metricsList = intent.getParcelableArrayListExtra("metricsList");
 
-        if (metricsList == null)
+        if (metricsList == null) {
+            this.stopSelf();
             return Service.START_NOT_STICKY;
+        }
 
-        for (int i = 0; i < metricsList.size(); i++) {
-            MetricModel test = metricsList.get(i);
+        for (MetricModel test : metricsList) {
             test.recordData(this);
         }
 

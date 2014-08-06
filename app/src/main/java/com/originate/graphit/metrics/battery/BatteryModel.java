@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.originate.graphit.R;
 import com.originate.graphit.metrics.MetricModel;
+import com.originate.graphit.Constants;
 
 import java.util.Calendar;
 import java.util.List;
@@ -72,7 +73,7 @@ public class BatteryModel extends MetricModel {
             db.addEntry(new BatteryEntry(Calendar.getInstance().getTimeInMillis()/1000-60, 100, true));
 
         db.addEntry(entry);
-        detectCritical(context, db.getLastEntries(3));
+        detectCritical(context, db.getLastEntries(Constants.NUM_BATTERY_ENTRIES));
     }
 
     private boolean detectCritical(Context context, List<BatteryEntry> entries) {
