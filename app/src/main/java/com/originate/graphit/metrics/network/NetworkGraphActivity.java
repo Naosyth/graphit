@@ -41,7 +41,6 @@ public class NetworkGraphActivity extends ActionBarActivity {
     private static NetworkModel model;
     private static List<Long> timeValues;
     private static List<Float> downValues;
-    private static List<Float> upValues;
     private static NetworkGraphFragment fragment;
 
     @Override
@@ -89,12 +88,10 @@ public class NetworkGraphActivity extends ActionBarActivity {
 
         timeValues = new ArrayList<Long>();
         downValues = new ArrayList<Float>();
-        upValues = new ArrayList<Float>();
 
         for (NetworkEntry entry : entryList) {
             timeValues.add(entry.getTime());
-            downValues.add(entry.getDown()/1048576);
-            upValues.add(entry.getUp()/1048576);
+            downValues.add(entry.getDown()/1048576); // Divide by 1024^2 to display as GB
         }
     }
 
@@ -256,8 +253,8 @@ public class NetworkGraphActivity extends ActionBarActivity {
         }
 
         public void loadData() {
-            if (timeValues == null || downValues == null || upValues == null ||
-                    timeValues.size() == 0 || downValues.size() == 0 || upValues.size() == 0)
+            if (timeValues == null || downValues == null ||
+                    timeValues.size() == 0 || downValues.size() == 0)
                 return;
 
             plot.removeSeries(series_down);
@@ -293,6 +290,7 @@ public class NetworkGraphActivity extends ActionBarActivity {
             plot.setDomainBoundaries(dayStart, dayEnd, BoundaryMode.FIXED);
             plot.setRangeBoundaries(null, null, BoundaryMode.AUTO);
             plot.setRangeTopMin(0.5);
+            plot.setRangeBottomMax(0);
             minXY = new PointF(dayStart, rangeMin);
             maxXY = new PointF(dayEnd, rangeMax);
             plot.redraw();
