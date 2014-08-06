@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.originate.graphit.metrics.MetricModel;
+import com.originate.graphit.metrics.MetricsList;
 
 import java.util.ArrayList;
 
@@ -15,7 +16,7 @@ public class DataCollectionService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         ArrayList<MetricModel> metricsList;
-        metricsList = intent.getParcelableArrayListExtra("metricsList");
+        metricsList = new MetricsList(this).getMetricsList();
 
         if (metricsList == null) {
             this.stopSelf();
