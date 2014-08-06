@@ -85,7 +85,7 @@ public class NetworkGraphActivity extends ActionBarActivity {
     }
 
     private void refreshData() {
-        List<NetworkEntry> entryList = formatEntriesForDisplay(model.getData(this));
+        List<NetworkEntry> entryList = model.getData(this);
 
         timeValues = new ArrayList<Long>();
         downValues = new ArrayList<Float>();
@@ -93,24 +93,9 @@ public class NetworkGraphActivity extends ActionBarActivity {
 
         for (NetworkEntry entry : entryList) {
             timeValues.add(entry.getTime());
-            downValues.add(entry.getDown());
-            upValues.add(entry.getUp());
+            downValues.add(entry.getDown()/1048576);
+            upValues.add(entry.getUp()/1048576);
         }
-    }
-
-    private List<NetworkEntry> formatEntriesForDisplay(List<NetworkEntry> entries) {
-        List<NetworkEntry> newList = new ArrayList<NetworkEntry>();
-        for (int i = 1; i < entries.size(); i++) {
-            NetworkEntry previous = entries.get(i-1);
-            NetworkEntry current= entries.get(i);
-
-            if (entries.get(i-1).getTime() < current.getTime()-120)
-                newList.add(new NetworkEntry(current.getTime()-60, 0, 0));
-            newList.add(new NetworkEntry(current.getTime(), (current.getDown()-previous.getDown())/1024, (current.getUp()-previous.getUp())/1024));
-            if ((i+1) >= entries.size() || entries.get(i+1).getTime() > current.getTime()+120)
-                newList.add(new NetworkEntry(current.getTime()+60, 0, 0));
-        }
-        return newList;
     }
 
     public static class NetworkGraphFragment extends Fragment {
@@ -161,7 +146,7 @@ public class NetworkGraphActivity extends ActionBarActivity {
             plot.setRangeStep(XYStepMode.SUBDIVIDE, 8);
             plot.getGraphWidget().setRangeGridLinePaint(new Paint(Color.BLACK));
             plot.getGraphWidget().setRangeOriginLinePaint(new Paint(Color.BLACK));
-            plot.getGraphWidget().setRangeLabelWidth(PixelUtils.dpToPix(55));
+            plot.getGraphWidget().setRangeLabelWidth(PixelUtils.dpToPix(75));
             plot.getGraphWidget().setRangeLabelVerticalOffset(PixelUtils.dpToPix(-6));
             plot.getGraphWidget().setRangeLabelHorizontalOffset(PixelUtils.dpToPix(5));
             plot.getGraphWidget().getRangeLabelPaint().setColor(Color.GRAY);
@@ -175,7 +160,7 @@ public class NetworkGraphActivity extends ActionBarActivity {
             plot.getGraphWidget().setDomainGridLinePaint(new Paint(Color.BLACK));
             plot.getGraphWidget().setDomainOriginLinePaint(new Paint(Color.BLACK));
 
-            plot.setRangeValueFormat(new DecimalFormat("0.00 MB"));
+            plot.setRangeValueFormat(new DecimalFormat("0.000 GB"));
             plot.setDomainValueFormat(new Format() {
                 private final SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yy k:mm");
 
@@ -277,7 +262,8 @@ public class NetworkGraphActivity extends ActionBarActivity {
 
             plot.removeSeries(series_down);
             series_down = new SimpleXYSeries(timeValues, downValues, "Network Down");
-            plot.addSeries(series_down, new LineAndPointFormatter(Color.BLACK, Color.BLACK, null, null));
+            LineAndPointFormatter formatter = new LineAndPointFormatter(Color.BLUE, null, Color.argb(128, 0, 0, 255), null);
+            plot.addSeries(series_down, formatter);
             plot.redraw();
         }
 
@@ -306,6 +292,7 @@ public class NetworkGraphActivity extends ActionBarActivity {
             long dayEnd = calendar.getTimeInMillis()/1000 + (dayOffset+1)*86400;
             plot.setDomainBoundaries(dayStart, dayEnd, BoundaryMode.FIXED);
             plot.setRangeBoundaries(null, null, BoundaryMode.AUTO);
+            plot.setRangeTopMin(0.5);
             minXY = new PointF(dayStart, rangeMin);
             maxXY = new PointF(dayEnd, rangeMax);
             plot.redraw();

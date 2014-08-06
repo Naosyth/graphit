@@ -36,8 +36,8 @@ public class NetworkEntry extends MetricsEntry {
     @Override
     public void setValues(Cursor cursor) {
         time = (long)cursor.getInt(0);
-        down = cursor.getInt(1);
-        up = cursor.getInt(2);
+        down = cursor.getFloat(1);
+        up = cursor.getFloat(2);
     }
 
     public void setTime(long time) {

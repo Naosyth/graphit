@@ -172,10 +172,6 @@ public class ScreenGraphActivity extends ActionBarActivity {
             plot.getGraphWidget().setDomainGridLinePaint(new Paint(Color.BLACK));
             plot.getGraphWidget().setDomainOriginLinePaint(new Paint(Color.BLACK));
 
-            LineAndPointFormatter formatter = new LineAndPointFormatter(Color.BLACK, Color.BLACK, null, null);
-            //formatter.getLinePaint().setStrokeWidth(PixelUtils.dpToPix(5));
-            formatter.getVertexPaint().setStrokeWidth(0);
-
             plot.setRangeValueFormat(new Format() {
                 @Override
                 public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
@@ -288,7 +284,8 @@ public class ScreenGraphActivity extends ActionBarActivity {
 
             plot.removeSeries(series);
             series = new SimpleXYSeries(timeValues, screenValues, "Screen Usage");
-            plot.addSeries(series, new LineAndPointFormatter(Color.BLACK, Color.BLACK, null, null));
+            LineAndPointFormatter formatter = new LineAndPointFormatter(Color.BLACK, null, null, null);
+            plot.addSeries(series, formatter);
             plot.redraw();
         }
 
