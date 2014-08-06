@@ -54,8 +54,8 @@ public class NetworkModel extends MetricModel {
         Calendar calendar = Calendar.getInstance();
         NetworkDBHelper db = new NetworkDBHelper(context);
 
-        int down = (int)TrafficStats.getTotalRxBytes()/1024;
-        int up = (int)TrafficStats.getTotalTxBytes()/1024;
+        long down = TrafficStats.getTotalRxBytes()/1024;
+        long up = TrafficStats.getTotalTxBytes()/1024;
 
         if (down < 0)
             return;
