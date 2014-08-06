@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.originate.graphit.metrics.MetricDBHelper;
 
-public class ScreenUsageDBHelper extends MetricDBHelper {
+public class ScreenUsageDBHelper extends MetricDBHelper<ScreenEntry> {
     public static final String TABLE_SCREEN = "screen_usage";
     public static final String KEY_STATE = "state";
     public static final String KEY_TIME = "_id";
