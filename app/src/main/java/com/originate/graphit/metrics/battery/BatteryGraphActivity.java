@@ -1,10 +1,8 @@
 package com.originate.graphit.metrics.battery;
 
 import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.Shader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;

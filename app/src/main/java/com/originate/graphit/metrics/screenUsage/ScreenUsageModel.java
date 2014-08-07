@@ -19,8 +19,8 @@ import java.util.Calendar;
 import java.util.List;
 
 public class ScreenUsageModel extends MetricModel {
-    public static String collapseDelayKey;
-    public static String deleteDelayKey;
+    private static String collapseDelayKey;
+    private static String deleteDelayKey;
 
     public ScreenUsageModel(Context context) {
         super(context.getString(R.string.pref_screen_listName), context.getString(R.string.pref_screen_enabled), R.drawable.icon_screen);

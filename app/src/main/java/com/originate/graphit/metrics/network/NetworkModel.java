@@ -17,8 +17,8 @@ import java.util.Calendar;
 import java.util.List;
 
 public class NetworkModel extends MetricModel {
-    public static String collapseDelayKey;
-    public static String deleteDelayKey;
+    private static String collapseDelayKey;
+    private static String deleteDelayKey;
 
     public NetworkModel(Context context) {
         super(context.getString(R.string.pref_network_listName), context.getString(R.string.pref_network_enabled), R.drawable.icon_network);
