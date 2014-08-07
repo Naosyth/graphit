@@ -23,13 +23,13 @@ public class ScreenUsageModel extends MetricModel {
     public static String deleteDelayKey;
 
     public ScreenUsageModel(Context context) {
-        super(context.getString(R.string.pref_screen_listName), context.getString(R.string.pref_screen_enabled));
+        super(context.getString(R.string.pref_screen_listName), context.getString(R.string.pref_screen_enabled), R.drawable.icon_screen);
         collapseDelayKey = context.getString(R.string.pref_screen_collapseDelay);
         deleteDelayKey = context.getString(R.string.pref_screen_deleteDelay);
     }
 
     public ScreenUsageModel(Parcel in) {
-        super(in.readString(), in.readString());
+        super(in.readString(), in.readString(), in.readInt());
     }
 
     @Override
@@ -51,7 +51,6 @@ public class ScreenUsageModel extends MetricModel {
         if (!settings.getBoolean(this.getEnableKey(), false))
             return;
 
-        //collapseData(context);
         deleteData(context);
 
         boolean screenOn;

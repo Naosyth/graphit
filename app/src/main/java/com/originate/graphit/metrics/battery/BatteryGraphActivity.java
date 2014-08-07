@@ -1,8 +1,10 @@
 package com.originate.graphit.metrics.battery;
 
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.Shader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -262,7 +264,9 @@ public class BatteryGraphActivity extends ActionBarActivity {
 
             plot.removeSeries(series);
             series = new SimpleXYSeries(timeValues, chargeValues, "Battery Level");
-            plot.addSeries(series, new LineAndPointFormatter(Color.BLACK, Color.BLACK, null, null));
+            int lineColor = Color.argb(128, 20,200,20);
+            LineAndPointFormatter formatter = new LineAndPointFormatter(lineColor, lineColor, Color.argb(128, 0, 255, 0), null);
+            plot.addSeries(series, formatter);
             plot.redraw();
         }
 

@@ -18,17 +18,17 @@ import java.util.Calendar;
 import java.util.List;
 
 public class BatteryModel extends MetricModel {
-    public static String collapseDelayKey;
-    public static String deleteDelayKey;
+    private static String collapseDelayKey;
+    private static String deleteDelayKey;
 
     public BatteryModel(Context context) {
-        super(context.getString(R.string.pref_battery_listName), context.getString(R.string.pref_battery_enabled));
+        super(context.getString(R.string.pref_battery_listName), context.getString(R.string.pref_battery_enabled), R.drawable.icon_battery);
         collapseDelayKey = context.getString(R.string.pref_battery_collapseDelay);
         deleteDelayKey = context.getString(R.string.pref_battery_deleteDelay);
     }
 
     public BatteryModel(Parcel in) {
-        super(in.readString(), in.readString());
+        super(in.readString(), in.readString(), in.readInt());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class BatteryModel extends MetricModel {
         if (lastEntry != null && lastEntry.getPercentage() == entry.getPercentage())
             return;
 
-        if (lastEntry != null && lastEntry.getPercentage() == 100) // Add an extra critical entry to show the transition from full to not full
+        if (lastEntry != null && lastEntry.getPercentage() == 100 && batteryPct != 100) // Add an extra critical entry to show the transition from full to not full
             db.addEntry(new BatteryEntry(Calendar.getInstance().getTimeInMillis()/1000-60, 100, true));
 
         db.addEntry(entry);

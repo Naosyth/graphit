@@ -21,13 +21,13 @@ public class NetworkModel extends MetricModel {
     public static String deleteDelayKey;
 
     public NetworkModel(Context context) {
-        super(context.getString(R.string.pref_network_listName), context.getString(R.string.pref_network_enabled));
+        super(context.getString(R.string.pref_network_listName), context.getString(R.string.pref_network_enabled), R.drawable.icon_network);
         collapseDelayKey = context.getString(R.string.pref_network_collapseDelay);
         deleteDelayKey = context.getString(R.string.pref_network_deleteDelay);
     }
 
     public NetworkModel(Parcel in) {
-        super(in.readString(), in.readString());
+        super(in.readString(), in.readString(), in.readInt());
     }
 
     @Override

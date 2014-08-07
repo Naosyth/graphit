@@ -8,10 +8,12 @@ import android.preference.PreferenceManager;
 public abstract class MetricModel implements Parcelable {
     private final String displayName;
     private final String enableKey;
+    private final int icon;
 
-    public MetricModel(String name, String key) {
+    public MetricModel(String name, String key, int icon) {
         this.displayName = name;
         this.enableKey = key;
+        this.icon = icon;
     }
 
     public String getDisplayName() {
@@ -29,6 +31,10 @@ public abstract class MetricModel implements Parcelable {
         SharedPreferences.Editor edit = settings.edit();
         edit.putBoolean(enableKey, isChecked);
         edit.commit();
+    }
+
+    public int getIcon() {
+        return icon;
     }
 
     public abstract void recordData(Context context);

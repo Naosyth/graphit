@@ -4,12 +4,14 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -28,6 +30,7 @@ public class MetricArrayAdapter extends ArrayAdapter<MetricModel> {
     static class ViewHolder {
         protected TextView text;
         protected ToggleButton toggle;
+        protected ImageView image;
     }
 
     @Override
@@ -40,6 +43,7 @@ public class MetricArrayAdapter extends ArrayAdapter<MetricModel> {
             view = inflator.inflate(R.layout.list_item_graph, null);
             final ViewHolder viewHolder = new ViewHolder();
 
+            viewHolder.image = (ImageView) view.findViewById(R.id.list_item_graph_imageview);
             viewHolder.text = (TextView) view.findViewById(R.id.list_item_graph_textview);
             viewHolder.toggle = (ToggleButton) view.findViewById(R.id.list_item_graph_toggle);
 
@@ -68,6 +72,7 @@ public class MetricArrayAdapter extends ArrayAdapter<MetricModel> {
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         ViewHolder holder = (ViewHolder) view.getTag();
+        holder.image.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), model.getIcon()));
         holder.text.setText(model.getDisplayName());
         holder.toggle.setChecked(settings.getBoolean(model.getEnableKey(), false));
 

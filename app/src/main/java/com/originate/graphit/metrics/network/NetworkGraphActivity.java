@@ -290,7 +290,6 @@ public class NetworkGraphActivity extends ActionBarActivity {
             plot.setDomainBoundaries(dayStart, dayEnd, BoundaryMode.FIXED);
             plot.setRangeBoundaries(null, null, BoundaryMode.AUTO);
             plot.setRangeTopMin(0.5);
-            plot.setRangeBottomMax(0);
             minXY = new PointF(dayStart, rangeMin);
             maxXY = new PointF(dayEnd, rangeMax);
             plot.redraw();
