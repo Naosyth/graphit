@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidplot.Plot;
+import com.androidplot.ui.AnchorPosition;
 import com.androidplot.ui.SizeLayoutType;
 import com.androidplot.ui.SizeMetrics;
 import com.androidplot.ui.XLayoutStyle;
@@ -117,8 +118,8 @@ public class ScreenGraphActivity extends ActionBarActivity {
         private XYSeries series;
         private int dayOffset = 0;
 
-        private static final int rangeMax = 2;
-        private static final int rangeMin = -1;
+        private static final float rangeMax = 1.0f;
+        private static final float rangeMin = 0.0f;
 
         public ScreenGraphFragment() {
         }
@@ -158,10 +159,11 @@ public class ScreenGraphActivity extends ActionBarActivity {
             plot.getGraphWidget().setTicksPerRangeLabel(1);
             plot.getGraphWidget().setRangeGridLinePaint(new Paint(Color.BLACK));
             plot.getGraphWidget().setRangeOriginLinePaint(new Paint(Color.BLACK));
-            plot.getGraphWidget().setRangeLabelWidth(PixelUtils.dpToPix(25));
+            plot.getGraphWidget().setRangeLabelWidth(PixelUtils.dpToPix(0));
             plot.getGraphWidget().setRangeLabelVerticalOffset(PixelUtils.dpToPix(-6));
             plot.getGraphWidget().setRangeLabelHorizontalOffset(PixelUtils.dpToPix(5));
             plot.getGraphWidget().getRangeLabelPaint().setColor(Color.GRAY);
+            plot.getGraphWidget().setRangeLabelPaint(null);
 
             // Domain Formatting
             PaintUtils.setFontSizeDp(plot.getGraphWidget().getDomainLabelPaint(), 9);
@@ -283,8 +285,8 @@ public class ScreenGraphActivity extends ActionBarActivity {
                 return;
 
             plot.removeSeries(series);
-            series = new SimpleXYSeries(timeValues, screenValues, "Screen Usage");
-            LineAndPointFormatter formatter = new LineAndPointFormatter(Color.BLACK, null, null, null);
+            series = new SimpleXYSeries(timeValues, screenValues, "On");
+            LineAndPointFormatter formatter = new LineAndPointFormatter(Color.TRANSPARENT, null, Color.argb(128, 0, 255, 255), null);
             plot.addSeries(series, formatter);
             plot.redraw();
         }
