@@ -13,7 +13,8 @@
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
         android:id="@+id/list_item_graph_imageview"
-        android:clickable="false" />
+        android:clickable="false"
+        android:contentDescription="@null"/>
     
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="0dp"

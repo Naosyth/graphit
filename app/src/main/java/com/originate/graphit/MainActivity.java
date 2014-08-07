@@ -16,10 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.originate.graphit.metrics.MetricsList;
-import com.originate.graphit.metrics.battery.BatteryModel;
 import com.originate.graphit.metrics.MetricModel;
-import com.originate.graphit.metrics.network.NetworkModel;
-import com.originate.graphit.metrics.screenUsage.ScreenUsageModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -30,7 +30,7 @@ public abstract class MetricModel implements Parcelable {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor edit = settings.edit();
         edit.putBoolean(enableKey, isChecked);
-        edit.commit();
+        edit.apply();
     }
 
     public int getIcon() {
