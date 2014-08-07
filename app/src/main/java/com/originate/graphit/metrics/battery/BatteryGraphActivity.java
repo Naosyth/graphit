@@ -42,6 +42,7 @@ public class BatteryGraphActivity extends ActionBarActivity {
     private static List<Long> timeValues;
     private static List<Integer> chargeValues;
     private static BatteryGraphFragment fragment;
+    private static boolean showPointLabels = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,7 @@ public class BatteryGraphActivity extends ActionBarActivity {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             refreshData();
-            fragment.loadData();
+            fragment.loadData(showPointLabels);
         } else if (id == R.id.action_prevDay) {
             fragment.viewPrevDay();
         } else if (id == R.id.action_today) {
@@ -122,7 +123,7 @@ public class BatteryGraphActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_battery_graph, container, false);
             plot = (XYPlot) rootView.findViewById(R.id.batteryPlot);
 
-            loadData();
+            loadData(showPointLabels);
             viewToday();
 
             // Remove certain components
@@ -185,14 +186,12 @@ public class BatteryGraphActivity extends ActionBarActivity {
 
                 PointF firstFinger;
                 float distBetweenFingers;
-                boolean stopThread = false;
 
                 public boolean onTouch(View arg0, MotionEvent event) {
                     switch (event.getAction() & MotionEvent.ACTION_MASK) {
                         case MotionEvent.ACTION_DOWN:
                             firstFinger = new PointF(event.getX(), event.getY());
                             mode = ONE_FINGER_DRAG;
-                            stopThread = true;
                             break;
                         case MotionEvent.ACTION_UP:
                         case MotionEvent.ACTION_POINTER_UP:
@@ -232,6 +231,14 @@ public class BatteryGraphActivity extends ActionBarActivity {
                     float offset = domainSpan * scale / 2.0f;
                     minXY.x = domainMidPoint - offset;
                     maxXY.x = domainMidPoint + offset;
+
+                    if (!showPointLabels && maxXY.x - minXY.x < 60*60) {
+                        showPointLabels = true;
+                        loadData(true);
+                    } else if (showPointLabels && maxXY.x - minXY.x > 60*60) {
+                        showPointLabels = false;
+                        loadData(false);
+                    }
                 }
 
                 private void scroll(float pan) {
@@ -255,15 +262,18 @@ public class BatteryGraphActivity extends ActionBarActivity {
             return rootView;
         }
 
-        public void loadData() {
+        public void loadData(Boolean showPointLabels) {
             if (timeValues == null || chargeValues == null ||
                     timeValues.size() == 0 || chargeValues.size() == 0)
                 return;
 
             plot.removeSeries(series);
             series = new SimpleXYSeries(timeValues, chargeValues, "Battery Level");
+            PointLabelFormatter plf = null;
             int lineColor = Color.argb(128, 20,200,20);
-            LineAndPointFormatter formatter = new LineAndPointFormatter(lineColor, lineColor, Color.argb(128, 0, 255, 0), null);
+            if (showPointLabels)
+                plf = new PointLabelFormatter(Color.BLACK);
+            LineAndPointFormatter formatter = new LineAndPointFormatter(lineColor, lineColor, Color.argb(128, 0, 255, 0), plf);
             plot.addSeries(series, formatter);
             plot.redraw();
         }

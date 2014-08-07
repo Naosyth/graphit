@@ -65,13 +65,13 @@ public class BatteryModel extends MetricModel {
         int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         int batteryPct = (int)(100*(level/(float)scale));
         Calendar calendar = Calendar.getInstance();
-        BatteryEntry entry = new BatteryEntry(calendar.getTimeInMillis()/1000, batteryPct, batteryPct==100); // critical if just reached full charge
-        if (lastEntry != null && lastEntry.getPercentage() == entry.getPercentage())
+        if (lastEntry != null && lastEntry.getPercentage() == batteryPct) // No change since last query - ignore
             return;
 
-        if (lastEntry != null && lastEntry.getPercentage() == 100 && batteryPct != 100) // Add an extra critical entry to show the transition from full to not full
+        if (lastEntry != null && lastEntry.getPercentage() == 100 && batteryPct < 100) // Went from full to not full
             db.addEntry(new BatteryEntry(Calendar.getInstance().getTimeInMillis()/1000-60, 100, true));
 
+        BatteryEntry entry = new BatteryEntry(calendar.getTimeInMillis()/1000, batteryPct, batteryPct==100); // critical if just reached full charge
         db.addEntry(entry);
         detectCritical(context, db.getLastEntries(Constants.NUM_BATTERY_ENTRIES));
     }
