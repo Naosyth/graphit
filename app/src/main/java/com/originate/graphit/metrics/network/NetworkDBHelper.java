@@ -16,8 +16,14 @@ public class NetworkDBHelper extends MetricDBHelper<NetworkEntry> {
     }
 
     @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        onCreate(db);
+    }
+
+    @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_NETWORK_TABLE = "CREATE TABLE " + TABLE_NETWORK + "("
+        String CREATE_NETWORK_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NETWORK + "("
                 + KEY_TIME + " INTEGER PRIMARY KEY,"
                 + KEY_DOWN + " REAL,"
                 + KEY_UP + " REAL" + ")";

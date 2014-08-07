@@ -27,19 +27,17 @@ import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
-    private ArrayList<MetricModel> metricsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        metricsList = new MetricsList(this).getMetricsList();
         startBackgroundService();
 
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MainFragment(metricsList))
+                    .add(R.id.container, MainFragment.newInstance(new MetricsList(this).getMetricsList()))
                     .commit();
         }
     }
@@ -77,13 +75,23 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public static class MainFragment extends Fragment {
+        private static final String listKey = "METRICS_LIST_KEY";
         private List<MetricModel> metricsList;
 
         public MainFragment() {
         }
 
-        public MainFragment(List<MetricModel> metricsList) {
-            this.metricsList = metricsList;
+        public static MainFragment newInstance(ArrayList<MetricModel> metricsList) {
+            Bundle b = new Bundle();
+            b.putParcelableArrayList(listKey, metricsList);
+            MainFragment fragment = new MainFragment();
+            fragment.setArguments(b);
+            return fragment;
+        }
+
+        public void onCreate(Bundle instance) {
+            super.onCreate(instance);
+            metricsList = getArguments().getParcelableArrayList(listKey);
         }
 
         @Override

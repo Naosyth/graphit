@@ -15,8 +15,14 @@ public class ScreenUsageDBHelper extends MetricDBHelper<ScreenEntry> {
     }
 
     @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        onCreate(db);
+    }
+
+    @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_SCREEN_USAGE_TABLE = "CREATE TABLE " + TABLE_SCREEN + "("
+        String CREATE_SCREEN_USAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_SCREEN + "("
                 + KEY_TIME + " INTEGER PRIMARY KEY,"
                 + KEY_STATE + " INTEGER)";
         db.execSQL(CREATE_SCREEN_USAGE_TABLE);

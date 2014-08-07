@@ -16,8 +16,14 @@ public class BatteryDBHelper extends MetricDBHelper<BatteryEntry> {
     }
 
     @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        onCreate(db);
+    }
+
+    @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_BATTERY_TABLE = "CREATE TABLE " + TABLE_BATTERY + "("
+        String CREATE_BATTERY_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_BATTERY + "("
                 + KEY_TIME + " INTEGER PRIMARY KEY,"
                 + KEY_PERCENT + " INTEGER,"
                 + KEY_CRITICAL + " INTEGER" + ")";

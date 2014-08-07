@@ -76,6 +76,10 @@ public class NetworkModel extends MetricModel {
 
         NetworkDBHelper db = new NetworkDBHelper(context);
         List<NetworkEntry> entries = db.getAllEntries();
+
+        if (entries == null)
+            return 0;
+
         int numDeleted = 0;
         for (int i = 1; i < entries.size(); i++) {
             NetworkEntry previous = entries.get(i-1);
