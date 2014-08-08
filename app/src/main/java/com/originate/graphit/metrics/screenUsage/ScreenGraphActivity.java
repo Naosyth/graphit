@@ -285,7 +285,7 @@ public class ScreenGraphActivity extends ActionBarActivity {
 
             plot.removeSeries(series);
             series = new SimpleXYSeries(timeValues, screenValues, "On");
-            LineAndPointFormatter formatter = new LineAndPointFormatter(Color.TRANSPARENT, null, Color.argb(128, 0, 255, 255), null);
+            LineAndPointFormatter formatter = new LineAndPointFormatter(Color.TRANSPARENT, null, model.getColor() & 0x80FFFFFF, null);
             plot.addSeries(series, formatter);
             plot.redraw();
         }

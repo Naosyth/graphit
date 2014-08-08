@@ -3,6 +3,7 @@ package com.originate.graphit.metrics.screenUsage;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.PowerManager;
@@ -23,13 +24,13 @@ public class ScreenUsageModel extends MetricModel {
     private static String deleteDelayKey;
 
     public ScreenUsageModel(Context context) {
-        super(context.getString(R.string.pref_screen_listName), context.getString(R.string.pref_screen_enabled), R.drawable.icon_screen);
+        super(context.getString(R.string.pref_screen_listName), context.getString(R.string.pref_screen_enabled), R.drawable.icon_screen, Color.rgb(255, 165, 0));
         collapseDelayKey = context.getString(R.string.pref_screen_collapseDelay);
         deleteDelayKey = context.getString(R.string.pref_screen_deleteDelay);
     }
 
     public ScreenUsageModel(Parcel in) {
-        super(in.readString(), in.readString(), in.readInt());
+        super(in.readString(), in.readString(), in.readInt(), in.readInt());
     }
 
     @Override
@@ -109,5 +110,7 @@ public class ScreenUsageModel extends MetricModel {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getDisplayName());
         dest.writeString(getEnableKey());
+        dest.writeInt(getIcon());
+        dest.writeInt(getColor());
     }
 }

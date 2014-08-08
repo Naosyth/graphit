@@ -14,7 +14,7 @@
             android:dialogTitle="@string/pref_metric_collapseDialogTitle"
             android:entries="@array/pref_metricCollapseFrequency"
             android:entryValues="@array/pref_metricCollapseFrequencyValues"
-            android:defaultValue="7776000000"/>
+            android:defaultValue="86400000"/>
         <ListPreference
             android:key="@string/pref_battery_deleteDelay"
             android:title="@string/pref_metric_deleteTitle"
@@ -48,7 +48,7 @@
             android:dialogTitle="@string/pref_metric_collapseDialogTitle"
             android:entries="@array/pref_metricCollapseFrequency"
             android:entryValues="@array/pref_metricCollapseFrequencyValues"
-            android:defaultValue="7776000000"/>
+            android:defaultValue="86400000"/>
         <ListPreference
             android:key="@string/pref_network_deleteDelay"
             android:title="@string/pref_metric_deleteTitle"

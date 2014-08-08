@@ -3,6 +3,7 @@ package com.originate.graphit.metrics.network;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.TrafficStats;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -21,13 +22,13 @@ public class NetworkModel extends MetricModel {
     private static String deleteDelayKey;
 
     public NetworkModel(Context context) {
-        super(context.getString(R.string.pref_network_listName), context.getString(R.string.pref_network_enabled), R.drawable.icon_network);
+        super(context.getString(R.string.pref_network_listName), context.getString(R.string.pref_network_enabled), R.drawable.icon_network, Color.rgb(0, 0, 255));
         collapseDelayKey = context.getString(R.string.pref_network_collapseDelay);
         deleteDelayKey = context.getString(R.string.pref_network_deleteDelay);
     }
 
     public NetworkModel(Parcel in) {
-        super(in.readString(), in.readString(), in.readInt());
+        super(in.readString(), in.readString(), in.readInt(), in.readInt());
     }
 
     @Override
@@ -125,5 +126,7 @@ public class NetworkModel extends MetricModel {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getDisplayName());
         dest.writeString(getEnableKey());
+        dest.writeInt(getIcon());
+        dest.writeInt(getColor());
     }
 }
