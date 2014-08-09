@@ -273,7 +273,7 @@ public class BatteryGraphActivity extends ActionBarActivity {
             int lineColor = Color.argb(128, 20,200,20);
             if (showPointLabels)
                 plf = new PointLabelFormatter(Color.BLACK);
-            LineAndPointFormatter formatter = new LineAndPointFormatter(lineColor, lineColor, Color.argb(128, 0, 255, 0), plf);
+            LineAndPointFormatter formatter = new LineAndPointFormatter(lineColor, lineColor, model.getColor() & 0x80FFFFFF, plf);
             plot.addSeries(series, formatter);
             plot.redraw();
         }

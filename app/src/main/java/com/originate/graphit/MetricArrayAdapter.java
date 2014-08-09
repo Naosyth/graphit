@@ -5,6 +5,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +74,7 @@ public class MetricArrayAdapter extends ArrayAdapter<MetricModel> {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         ViewHolder holder = (ViewHolder) view.getTag();
         holder.image.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), model.getIcon()));
+        holder.image.setColorFilter(model.getColor());
         holder.text.setText(model.getDisplayName());
         holder.toggle.setChecked(settings.getBoolean(model.getEnableKey(), false));
 

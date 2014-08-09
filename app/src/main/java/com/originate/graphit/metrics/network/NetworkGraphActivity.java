@@ -259,7 +259,7 @@ public class NetworkGraphActivity extends ActionBarActivity {
 
             plot.removeSeries(series_down);
             series_down = new SimpleXYSeries(timeValues, downValues, "Network Down");
-            LineAndPointFormatter formatter = new LineAndPointFormatter(Color.BLUE, null, Color.argb(128, 0, 0, 255), null);
+            LineAndPointFormatter formatter = new LineAndPointFormatter(Color.BLUE, null, model.getColor() & 0x80FFFFFF, null);
             plot.addSeries(series_down, formatter);
             plot.redraw();
         }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.BatteryManager;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -22,13 +23,13 @@ public class BatteryModel extends MetricModel {
     private static String deleteDelayKey;
 
     public BatteryModel(Context context) {
-        super(context.getString(R.string.pref_battery_listName), context.getString(R.string.pref_battery_enabled), R.drawable.icon_battery);
+        super(context.getString(R.string.pref_battery_listName), context.getString(R.string.pref_battery_enabled), R.drawable.icon_battery, Color.rgb(0, 255, 0));
         collapseDelayKey = context.getString(R.string.pref_battery_collapseDelay);
         deleteDelayKey = context.getString(R.string.pref_battery_deleteDelay);
     }
 
     public BatteryModel(Parcel in) {
-        super(in.readString(), in.readString(), in.readInt());
+        super(in.readString(), in.readString(), in.readInt(), in.readInt());
     }
 
     @Override
@@ -140,5 +141,7 @@ public class BatteryModel extends MetricModel {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getDisplayName());
         dest.writeString(getEnableKey());
+        dest.writeInt(getIcon());
+        dest.writeInt(getColor());
     }
 }

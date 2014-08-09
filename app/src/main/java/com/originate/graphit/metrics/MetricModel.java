@@ -9,11 +9,13 @@ public abstract class MetricModel implements Parcelable {
     private final String displayName;
     private final String enableKey;
     private final int icon;
+    private final int color;
 
-    public MetricModel(String name, String key, int icon) {
+    public MetricModel(String name, String key, int icon, int color) {
         this.displayName = name;
         this.enableKey = key;
         this.icon = icon;
+        this.color = color;
     }
 
     public String getDisplayName() {
@@ -35,6 +37,10 @@ public abstract class MetricModel implements Parcelable {
 
     public int getIcon() {
         return icon;
+    }
+
+    public int getColor() {
+        return color;
     }
 
     public abstract void recordData(Context context);
